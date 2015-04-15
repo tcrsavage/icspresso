@@ -1,40 +1,40 @@
 <?php
 
 /*
-Plugin Name: HM Elastic Search
+Plugin Name: Icspresso
 Description: Developer's ElasticSearch integration for WordPress
 Author: Theo Savage
 Version: 0.1
 Author URI: http://hmn.md/
 */
 
-namespace HMES;
+namespace Icspresso;
 
-require_once ( __DIR__ . '/hm-elasticsearch-admin.php' );
+require_once ( __DIR__ . '/icspresso-admin.php' );
 include_dir( __DIR__ . '/lib/elasticsearch/src' );
 include_dir( __DIR__ . '/classes' );
 
 /**
- * Init ell HMES type classes on plugins_loaded hook
+ * Init ell Icspresso type classes on plugins_loaded hook
  */
 function init_types() {
 
 	Type_Manager::init_types();
 }
 
-add_action( 'plugins_loaded', '\\HMES\\init_types' );
+add_action( 'plugins_loaded', __NAMESPACE__ . '\\init_types' );
 
 /**
- * Get the list of HMES type classes by name
+ * Get the list of Icspresso type classes by name
  *
  * @return array
  */
 function get_type_class_names() {
-	return apply_filters( 'hmes_index_types', array(
-		'post'      => '\\HMES\\Types\Post',
-		'user'      => '\\HMES\\Types\User',
-		'comment'   => '\\HMES\\Types\Comment',
-		'term'      => '\\HMES\\Types\Term'
+	return apply_filters( 'icspresso_index_types', array(
+		'post'      => __NAMESPACE__ . '\\Types\Post',
+		'user'      => __NAMESPACE__ . '\\Types\User',
+		'comment'   => __NAMESPACE__ . '\\Types\Comment',
+		'term'      => __NAMESPACE__ . '\\Types\Term'
 	) );
 }
 

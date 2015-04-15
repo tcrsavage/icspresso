@@ -1,6 +1,6 @@
 <?php
 
-namespace HMES\Types;
+namespace Icspresso\Types;
 
 class Post extends Base {
 
@@ -130,7 +130,7 @@ class Post extends Base {
 			}
 		};
 
-		$item = apply_filters( 'hmes_parsed_item_for_index_' . $this->name, $item );
+		$item = apply_filters( 'icspresso_parsed_item_for_index_' . $this->name, $item );
 
 		return $item;
 	}

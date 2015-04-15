@@ -1,8 +1,8 @@
 <?php
 
-namespace HMES\Types;
-use HMES\Wrapper;
-use HMES\Logger;
+namespace Icspresso\Types;
+use Icspresso\Wrapper;
+use Icspresso\Logger;
 
 abstract class Base {
 
@@ -78,7 +78,7 @@ abstract class Base {
 	 */
 	public function get_mapping() {
 
-		return apply_filters( 'hmes_mapping_' . $this->name, array() );
+		return apply_filters( 'icspresso_mapping_' . $this->name, array() );
 	}
 
 	/**
@@ -355,7 +355,7 @@ abstract class Base {
 		$attempts = 0;
 
 		//Wait until other threads have finished saving their queued items (failsafe)
-		while ( ! wp_cache_add( 'hmes_queued_actions_lock_' . $this->name . '_' . $action, '1', '', 60 ) && $attempts < 10 ) {
+		while ( ! wp_cache_add( 'icspresso_queued_actions_lock_' . $this->name . '_' . $action, '1', '', 60 ) && $attempts < 10 ) {
 			$attempts++;
 			time_nanosleep( 0, 500000000 );
 		}
@@ -368,7 +368,7 @@ abstract class Base {
 	 */
 	function clear_lock( $action ) {
 
-		wp_cache_delete( 'hmes_queued_actions_lock_' . $this->name . '_' . $action );
+		wp_cache_delete( 'icspresso_queued_actions_lock_' . $this->name . '_' . $action );
 	}
 
 	/**
@@ -391,7 +391,7 @@ abstract class Base {
 
 		if ( count( $all ) > 10000 ) {
 
-			\HMES\Logger::save_log( array(
+			\Icspresso\Logger::save_log( array(
 				'timestamp'      => time(),
 				'type'           => 'warning',
 				'index'          => $this->get_wrapper()->args['index'],
@@ -405,7 +405,7 @@ abstract class Base {
 		}
 
 		$this->clear_saved_actions();
-		add_option( 'hmes_queued_actions_' . $this->name, $all, '', 'no' );
+		add_option( 'icspresso_queued_actions_' . $this->name, $all, '', 'no' );
 
 		$this->clear_lock( 'save_actions' );
 	}
@@ -417,7 +417,7 @@ abstract class Base {
 	 */
 	function get_saved_actions() {
 
-		return get_option( 'hmes_queued_actions_' . $this->name, array() );
+		return get_option( 'icspresso_queued_actions_' . $this->name, array() );
 	}
 
 	/**
@@ -426,7 +426,7 @@ abstract class Base {
 	 */
 	function clear_saved_actions() {
 
-		delete_option( 'hmes_queued_actions_' . $this->name );
+		delete_option( 'icspresso_queued_actions_' . $this->name );
 	}
 
 	/**
@@ -436,7 +436,7 @@ abstract class Base {
 	 */
 	function get_execute_cron_hook() {
 
-		return 'hmes_execute_queued_actions_cron_' . $this->name;
+		return 'icspresso_execute_queued_actions_cron_' . $this->name;
 	}
 
 	/**
@@ -496,10 +496,10 @@ abstract class Base {
 	function set_is_doing_full_index( $bool ) {
 
 		if ( $bool ) {
-			update_option( 'hmes_' . $this->name . '_is_doing_full_index', time() );
+			update_option( 'icspresso_' . $this->name . '_is_doing_full_index', time() );
 		} else {
 
-			delete_option( 'hmes_' . $this->name . '_is_doing_full_index' );
+			delete_option( 'icspresso_' . $this->name . '_is_doing_full_index' );
 		}
 
 	}
@@ -511,7 +511,7 @@ abstract class Base {
 	 */
 	function get_is_doing_full_index() {
 
-		$val = get_option( 'hmes_' . $this->name . '_is_doing_full_index', 0 );
+		$val = get_option( 'icspresso_' . $this->name . '_is_doing_full_index', 0 );
 
 		return strtotime( '-30 minutes', time() ) < $val;
 	}

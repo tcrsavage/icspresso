@@ -1,39 +1,39 @@
 <?php
 
-namespace HMES;
+namespace Icspresso;
 
-add_action( 'admin_menu', '\\HMES\\admin_screen' );
+add_action( 'admin_menu', '\\Icspresso\\admin_screen' );
 
 /**
- * Add a submenu page to settings for HMES
+ * Add a submenu page to settings for Icspresso
  */
 function admin_screen() {
 
-	$hook_settings = add_menu_page( 'HM ElasticSearch', 'ElasticSearch', 'manage_options', 'hm-elastic-search-settings', function() {
+	$hook_settings = add_menu_page( 'Icspresso Elasticsearch', 'ElasticSearch', 'manage_options', 'icspresso-settings', function() {
 		?>
 		<div class="wrap">
 			<div id="icon-options-general" class="icon32"><br></div>
 			<h2>General Settings</h2>
 
 			<form method="post">
-				<?php wp_nonce_field( 'hm_es_settings', 'hm_es_settings' ); ?>
+				<?php wp_nonce_field( 'icspresso_settings', 'icspresso_settings' ); ?>
 
 				<table class="form-table">
 					<tbody>
 					<tr valign="top">
-						<th scope="row"><label for="hm_es_host">Elastic Search Host</label></th>
-						<td><input name="hm_es_host" type="text" id="hm_es_host" value="<?php echo Configuration::get_default_host(); ?>" placeholder="10.1.1.5" class="regular-text"></td>
+						<th scope="row"><label for="icspresso_host">Elastic Search Host</label></th>
+						<td><input name="icspresso_host" type="text" id="icspresso_host" value="<?php echo Configuration::get_default_host(); ?>" placeholder="10.1.1.5" class="regular-text"></td>
 					</tr>
 
 					<tr valign="top">
-						<th scope="row"><label for="hm_es_port">Elastic Search Port</label></th>
-						<td><input name="hm_es_port" type="text" id="hm_es_port" value="<?php echo Configuration::get_default_port(); ?>" placeholder="9200" class="regular-text"></td>
+						<th scope="row"><label for="icspresso_port">Elastic Search Port</label></th>
+						<td><input name="icspresso_port" type="text" id="icspresso_port" value="<?php echo Configuration::get_default_port(); ?>" placeholder="9200" class="regular-text"></td>
 					</tr>
 
 					<tr valign="top">
-						<th scope="row"><label for="hm_es_protocol">Elastic Search Protocol</label></th>
+						<th scope="row"><label for="icspresso_protocol">Elastic Search Protocol</label></th>
 						<td>
-							<select	id="hm_es_protocol" name="hm_es_protocol">
+							<select	id="icspresso_protocol" name="icspresso_protocol">
 								<?php foreach ( Configuration::get_supported_protocols() as $protocol => $label ) : ?>
 									<option value="<?php echo $protocol; ?>" <?php selected( $protocol, Configuration::get_default_protocol() ); ?>><?php echo $label; ?></option>
 								<?php endforeach; ?>
@@ -42,20 +42,20 @@ function admin_screen() {
 					</tr>
 
 					<tr valign="top">
-						<th scope="row"><label for="hm_es_is_enabled">Enable Elastic Search Indexing</label></th>
+						<th scope="row"><label for="icspresso_is_enabled">Enable Elastic Search Indexing</label></th>
 						<td>
-							<input type="hidden" name="hm_es_is_enabled" value="0" />
-							<input name="hm_es_is_enabled" type="checkbox" id="hm_es_is_enabled" <?php checked( Configuration::get_is_indexing_enabled() ); ?> value="1">
+							<input type="hidden" name="icspresso_is_enabled" value="0" />
+							<input name="icspresso_is_enabled" type="checkbox" id="icspresso_is_enabled" <?php checked( Configuration::get_is_indexing_enabled() ); ?> value="1">
 						</td>
 					</tr>
 
 					<?php if ( Logger::count_logs() ) : ?>
 
 						<tr valign="top">
-							<th scope="row"><label for="hm_es_clear_logs">Clear Logs</label></th>
+							<th scope="row"><label for="icspresso_clear_logs">Clear Logs</label></th>
 							<td>
-								<input type="hidden" name="hm_es_clear_logs" value="0" />
-								<input name="hm_es_clear_logs" type="checkbox" id="hm_es_clear_logs" value="1">
+								<input type="hidden" name="icspresso_clear_logs" value="0" />
+								<input name="icspresso_clear_logs" type="checkbox" id="icspresso_clear_logs" value="1">
 							</td>
 						</tr>
 
@@ -75,13 +75,13 @@ function admin_screen() {
 	<?php
 	} );
 
-	$hook_indexing = add_submenu_page( 'hm-elastic-search-settings', 'Indexing', 'Indexing', 'manage_options', 'hm-elastic-search-indexing', function() {
+	$hook_indexing = add_submenu_page( 'icspresso-settings', 'Indexing', 'Indexing', 'manage_options', 'icspresso-indexing', function() {
 		?>
 		<div class="wrap">
 			<div id="icon-options-general" class="icon32"><br></div>
 			<h2>Indexing</h2>
 
-			<?php wp_nonce_field( 'hm_es_settings', 'hm_es_settings' ); ?>
+			<?php wp_nonce_field( 'icspresso_settings', 'icspresso_settings' ); ?>
 
 			<?php foreach( Type_Manager::get_types() as $type ) : ?>
 
@@ -90,32 +90,32 @@ function admin_screen() {
 				<table class="form-table">
 					<tbody>
 						<tr valign="top">
-							<th scope="row"><label for="hm_es_reindex_<?php echo $type->name; ?>">Status</label></th>
+							<th scope="row"><label for="icspresso_reindex_<?php echo $type->name; ?>">Status</label></th>
 							<td>
-								<div class="hm-es-status-wrapper">
-									<div class="hm-es-status-message hm-es-status-message-<?php echo $type->name; ?>">Fetching...</div>
-									<div class="hm-es-status hm-es-status-<?php echo $type->name; ?>" data-type-name="<?php echo $type->name; ?>" ></div>
+								<div class="icspresso-status-wrapper">
+									<div class="icspresso-status-message icspresso-status-message-<?php echo $type->name; ?>">Fetching...</div>
+									<div class="icspresso-status icspresso-status-<?php echo $type->name; ?>" data-type-name="<?php echo $type->name; ?>" ></div>
 								</div>
 							</td>
 						</tr>
 
 						<tr valign="top">
-							<th scope="row"><label for="hm_es_reindex_<?php echo $type->name; ?>">Indexing</label></th>
+							<th scope="row"><label for="icspresso_reindex_<?php echo $type->name; ?>">Indexing</label></th>
 							<td>
 
 								<?php if ( Configuration::get_is_indexing_enabled() ) : ?>
 
 									<?php $next_scheduled = ( time() < wp_next_scheduled( Type_Manager::$index_cron_name ) ) ? human_time_diff( time(), wp_next_scheduled( Type_Manager::$index_cron_name ) ) : 'now'; ?>
 
-									<div class="hm-es-automatic-indexing-information">
+									<div class="icspresso-automatic-indexing-information">
 										<div>Items pending sync: <strong><?php echo count( $type->get_saved_actions() ); ?></strong></div>
 										<div>Next automatic sync: <strong><?php echo $next_scheduled ?></strong></div>
 									</div>
 
 								<?php endif; ?>
 
-								<input type="button" id="hm_es_reindex_<?php echo $type->name; ?>" data-type-name="<?php echo $type->name; ?>" class="button hm-es-reindex-submit" value="Reindex" />
-								<input type="button" id="hm_es_resync_<?php echo $type->name; ?>" data-type-name="<?php echo $type->name; ?>" class="button hm-es-resync-submit" value="Resync" />
+								<input type="button" id="icspresso_reindex_<?php echo $type->name; ?>" data-type-name="<?php echo $type->name; ?>" class="button icspresso-reindex-submit" value="Reindex" />
+								<input type="button" id="icspresso_resync_<?php echo $type->name; ?>" data-type-name="<?php echo $type->name; ?>" class="button icspresso-resync-submit" value="Resync" />
 							</td>
 						</tr>
 					</tbody>
@@ -127,7 +127,7 @@ function admin_screen() {
 		<?php
 	} );
 
-	$hook_logs = add_submenu_page( 'hm-elastic-search-settings', 'Logs', 'Logs', 'manage_options', 'hm-elastic-search-logs', function() {
+	$hook_logs = add_submenu_page( 'icspresso-settings', 'Logs', 'Logs', 'manage_options', 'icspresso-logs', function() {
 		?>
 		<div class="wrap">
 			<div id="icon-options-general" class="icon32"><br></div>
@@ -136,7 +136,7 @@ function admin_screen() {
 			<?php if ( Logger::count_logs() ) : ?>
 
 				<?php $page = ( ! empty( $_GET['log_page'] ) ) ? intval( $_GET['log_page'] ) : 1; ?>
-					<table class="widefat hmes-log-table">
+					<table class="widefat icspresso-log-table">
 						<thead>
 						<tr>
 							<th>ID</th>
@@ -163,7 +163,7 @@ function admin_screen() {
 					</table>
 
 					<?php if ( ( $log_count = Logger::count_logs() ) > 20 ) : ?>
-						<div class="hmes-log-table-pagination">
+						<div class="icspresso-log-table-pagination">
 							<span>Page</span>
 							<?php for ( $i = 1; $i < ( ( $log_count + 20 ) / 20 ); $i++ ) : ?>
 								<a href="<?php echo add_query_arg( 'log_page', $i ); ?>"><?php echo $i; ?></a>
@@ -183,38 +183,38 @@ function admin_screen() {
 	<?php
 	} );
 
-	add_action( 'load-'. $hook_settings, '\\HMES\\init_elastic_search_index', 9 );
-	add_action( 'load-'. $hook_settings, '\\HMES\\process_admin_screen_form_submission' );
-	add_action( 'load-'. $hook_settings, '\\HMES\\enqueue_admin_assets' );
+	add_action( 'load-'. $hook_settings, '\\Icspresso\\init_elastic_search_index', 9 );
+	add_action( 'load-'. $hook_settings, '\\Icspresso\\process_admin_screen_form_submission' );
+	add_action( 'load-'. $hook_settings, '\\Icspresso\\enqueue_admin_assets' );
 
-	add_action( 'load-'. $hook_logs, '\\HMES\\enqueue_admin_assets' );
-	add_action( 'load-'. $hook_indexing, '\\HMES\\enqueue_admin_assets' );
+	add_action( 'load-'. $hook_logs, '\\Icspresso\\enqueue_admin_assets' );
+	add_action( 'load-'. $hook_indexing, '\\Icspresso\\enqueue_admin_assets' );
 }
 
 /**
- * Capture form submissions from the HMES settings page
+ * Capture form submissions from the Icspresso settings page
  */
 function process_admin_screen_form_submission() {
 
-	if ( ! isset( $_POST['submit'] ) || ! wp_verify_nonce( $_POST['hm_es_settings'], 'hm_es_settings' ) )
+	if ( ! isset( $_POST['submit'] ) || ! wp_verify_nonce( $_POST['icspresso_settings'], 'icspresso_settings' ) )
 		return;
 
-	if ( isset( $_POST['hm_es_host'] ) )
-		Configuration::set_default_host( str_replace( 'http://', '', sanitize_text_field( $_POST['hm_es_host'] ) ) );
+	if ( isset( $_POST['icspresso_host'] ) )
+		Configuration::set_default_host( str_replace( 'http://', '', sanitize_text_field( $_POST['icspresso_host'] ) ) );
 
-	if ( isset( $_POST['hm_es_port'] ) )
-		Configuration::set_default_port( sanitize_text_field( $_POST['hm_es_port'] ) );
+	if ( isset( $_POST['icspresso_port'] ) )
+		Configuration::set_default_port( sanitize_text_field( $_POST['icspresso_port'] ) );
 
-	if ( isset( $_POST['hm_es_protocol'] ) && array_key_exists( sanitize_text_field( $_POST['hm_es_protocol'] ), Configuration::get_supported_protocols() ) ) {
-		Configuration::set_default_protocol( sanitize_text_field( $_POST['hm_es_protocol'] ) );
+	if ( isset( $_POST['icspresso_protocol'] ) && array_key_exists( sanitize_text_field( $_POST['icspresso_protocol'] ), Configuration::get_supported_protocols() ) ) {
+		Configuration::set_default_protocol( sanitize_text_field( $_POST['icspresso_protocol'] ) );
 	}
 
-	if ( isset( $_POST['hm_es_is_enabled'] ) ) {
+	if ( isset( $_POST['icspresso_is_enabled'] ) ) {
 
-		Configuration::set_is_indexing_enabled( (bool) sanitize_text_field( $_POST['hm_es_is_enabled'] ) );
+		Configuration::set_is_indexing_enabled( (bool) sanitize_text_field( $_POST['icspresso_is_enabled'] ) );
 	}
 
-	if ( ! empty( $_POST['hm_es_clear_logs'] ) ) {
+	if ( ! empty( $_POST['icspresso_clear_logs'] ) ) {
 		Logger::set_logs( array() );
 	}
 
@@ -224,18 +224,18 @@ function process_admin_screen_form_submission() {
 }
 
 /**
- * Enqueue scripts and styles for the HMES settings page
+ * Enqueue scripts and styles for the Icspresso settings page
  */
 function enqueue_admin_assets()  {
 
-	wp_enqueue_script( 'hmes-admin-scripts', plugin_dir_url( __FILE__ ) . 'assets/admin-scripts.js', array( 'jquery' ), false, true );
-	wp_enqueue_style( 'hmes-admin-scripts', plugin_dir_url( __FILE__ ) . 'assets/admin-styles.css' );
+	wp_enqueue_script( 'icspresso-admin-scripts', plugin_dir_url( __FILE__ ) . 'assets/admin-scripts.js', array( 'jquery' ), false, true );
+	wp_enqueue_style( 'icspresso-admin-scripts', plugin_dir_url( __FILE__ ) . 'assets/admin-styles.css' );
 
 };
 
-add_action( 'wp_ajax_hmes_get_type_status', function() {
+add_action( 'wp_ajax_icspresso_get_type_status', function() {
 
-	if ( ! wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), 'hm_es_settings' ) )
+	if ( ! wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), 'icspresso_settings' ) )
 		exit;
 
 	$type_name = sanitize_text_field( $_POST['type_name'] );
@@ -249,39 +249,40 @@ add_action( 'wp_ajax_hmes_get_type_status', function() {
 } );
 
 //Capture ajax request to refresh a type in the elasticsearch index
-add_action( 'wp_ajax_hmes_init_index', function() {
+add_action( 'wp_ajax_icspresso_init_index', function() {
 
-	if ( ! wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), 'hm_es_settings' ) )
+	if ( ! wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), 'icspresso_settings' ) ) {
 		exit;
+	}
 
 	$type_name = sanitize_text_field( $_POST['type_name'] );
 
 	Type_Manager::get_type( $type_name )->set_is_doing_full_index( true );
 	Type_Manager::get_type( $type_name )->delete_all_indexed_items();
 
-	wp_schedule_single_event( time(), 'hmes_reindex_types_cron', array( 'type_name' => $type_name, 'timestamp' => time() ) );
+	wp_schedule_single_event( time(), 'icspresso_reindex_types_cron', array( 'type_name' => $type_name, 'timestamp' => time() ) );
 
 	exit;
 
 } );
 
 //Capture ajax request to refresh a type in the elasticsearch index
-add_action( 'wp_ajax_hmes_resync_index', function() {
+add_action( 'wp_ajax_icspresso_resync_index', function() {
 
-	if ( ! wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), 'hm_es_settings' ) )
+	if ( ! wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), 'icspresso_settings' ) )
 		exit;
 
 	$type_name = sanitize_text_field( $_POST['type_name'] );
 
 	Type_Manager::get_type( $type_name )->set_is_doing_full_index( true );
 
-	wp_schedule_single_event( time(), 'hmes_resync_types_cron', array( 'type_name' => $type_name, 'timestamp' => time() ) );
+	wp_schedule_single_event( time(), 'icspresso_resync_types_cron', array( 'type_name' => $type_name, 'timestamp' => time() ) );
 
 	exit;
 
 } );
 
-add_action( 'hmes_reindex_types_cron', function( $type_name ) {
+add_action( 'icspresso_reindex_types_cron', function( $type_name ) {
 
 	// This can take a long time and consume a lot of memory
 	if ( ini_get( 'max_execution_time' ) < 3600 ) {
@@ -294,7 +295,7 @@ add_action( 'hmes_reindex_types_cron', function( $type_name ) {
 	reindex_types( array( $type_name ) );
 } );
 
-add_action( 'hmes_resync_types_cron', function( $type_name ) {
+add_action( 'icspresso_resync_types_cron', function( $type_name ) {
 
 	// This can take a long time and consume a lot of memory
 	if ( ini_get( 'max_execution_time' ) < 3600 ) {

@@ -1,16 +1,16 @@
 <?php
 
-namespace HMES;
+namespace Icspresso;
 
-use HMES\Types\Base;
+use Icspresso\Types\Base;
 
 class Type_Manager {
 
 	protected static $types = array();
-	public static $index_cron_name = 'hmes_update_index_cron';
+	public static $index_cron_name = 'icspresso_update_index_cron';
 
 	/**
-	 * Initialise the HMES type classes (verify setup and set hooks)
+	 * Initialise the Icspresso type classes (verify setup and set hooks)
 	 */
 	public static function init_types() {
 
@@ -29,7 +29,7 @@ class Type_Manager {
 	}
 
 	/**
-	 * Get all HMES type class instances
+	 * Get all Icspresso type class instances
 	 *
 	 * @return Types\Base[]
 	 */
@@ -39,7 +39,7 @@ class Type_Manager {
 	}
 
 	/**
-	 * Get a HMES type class instance from the type name
+	 * Get a Icspresso type class instance from the type name
 	 *
 	 * @param $type_name
 	 * @return Types\Base|bool
@@ -58,7 +58,7 @@ class Type_Manager {
 	}
 
 	/**
-	 * Verify the setup of a HMES type class
+	 * Verify the setup of a Icspresso type class
 	 *
 	 * @param $class
 	 * @throws \Exception
@@ -71,7 +71,7 @@ class Type_Manager {
 	}
 
 	/**
-	 * Set the hooks of a HMES type class
+	 * Set the hooks of a Icspresso type class
 	 *
 	 * @param $class
 	 */
@@ -105,7 +105,7 @@ class Type_Manager {
 			return;
 		}
 
-		add_action( static::$index_cron_name, array( 'HMES\Type_Manager', 'execute_index_cron' ), 10, 5 );
+		add_action( static::$index_cron_name, array( 'Icspresso\Type_Manager', 'execute_index_cron' ), 10, 5 );
 
 		if ( wp_next_scheduled( static::$index_cron_name ) ) {
 			return;

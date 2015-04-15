@@ -2,7 +2,7 @@
 
 //todo: taxonomies can be modified and deleted (what to do in this case)
 
-namespace HMES\Types;
+namespace Icspresso\Types;
 
 class Term extends Base {
 
@@ -95,7 +95,7 @@ class Term extends Base {
 			return false;
 		}
 
-		$item = apply_filters( 'hmes_parsed_item_for_index_' . $this->name, $item );
+		$item = apply_filters( 'icspresso_parsed_item_for_index_' . $this->name, $item );
 
 		return $item;
 	}

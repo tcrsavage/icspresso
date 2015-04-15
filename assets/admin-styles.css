@@ -1,54 +1,54 @@
-.hmes-log-table tr td.expand {
+.icspresso-log-table tr td.expand {
 	text-align: center;
 	font-weight: bold;
 	font-size: 21px;
 	cursor: pointer;
 }
 
-.hmes-log-table tr div {
+.icspresso-log-table tr div {
 
 	height: 30px;
 	overflow: hidden;
 }
 
-.hmes-log-table tr.expanded div {
+.icspresso-log-table tr.expanded div {
 	height: auto;
 }
 
-.hmes-log-table-pagination {
+.icspresso-log-table-pagination {
 	margin-right: 3px;
 	margin-top: 3px;
 	float: right;
 }
 
-.hmes-log-table tr .td-id {
+.icspresso-log-table tr .td-id {
 	width: 20px;
 }
 
-.hmes-log-table tr .td-type {
+.icspresso-log-table tr .td-type {
 	width: 40px;
 }
 
-.hmes-log-table tr .td-date {
+.icspresso-log-table tr .td-date {
 	width: 50px;
 }
 
-.hmes-log-table tr .td-message {
+.icspresso-log-table tr .td-message {
 	max-width: 250px;
 }
 
-.hmes-log-table tr .td-data {
+.icspresso-log-table tr .td-data {
 	max-width: 350px;
 }
 
-.hm-es-status-wrapper {
+.icspresso-status-wrapper {
 
 	width: 100%;
 	border: 1px solid rgb( 223, 223, 223 );
 	position: relative;
 }
 
-.hm-es-status-message {
+.icspresso-status-message {
 	position: absolute;
 	top: 5px;
 	left: 50%;
@@ -57,7 +57,7 @@
 	text-align: center;
 }
 
-.hm-es-status {
+.icspresso-status {
 
 	width: 100%;
 	padding: 10px;
@@ -67,25 +67,25 @@
 	height: 30px;
 }
 
-.hm-es-status.status-ok {
+.icspresso-status.status-ok {
 
 	background-color: rgb( 216, 255, 215 )
 }
 
-.hm-es-status.status-error {
+.icspresso-status.status-error {
 
 	background-color: rgb( 255, 228, 228 );
 }
 
-.hm-es-status.status-warning {
+.icspresso-status.status-warning {
 
 	background-color: rgb( 255, 250, 217 )
 }
 
-.hm-es-automatic-indexing-information {
+.icspresso-automatic-indexing-information {
 	margin-bottom: 10px;
 }
 
-.hm-es-automatic-indexing-information div {
+.icspresso-automatic-indexing-information div {
 	margin-bottom: 5px;
 }

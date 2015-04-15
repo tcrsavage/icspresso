@@ -1,6 +1,6 @@
 <?php
 
-namespace HMES;
+namespace Icspresso;
 
 class Logger {
 
@@ -11,7 +11,7 @@ class Logger {
 	 */
 	static function get_max_logs() {
 
-		return \HMES\Configuration::get_default_max_logs();
+		return \Icspresso\Configuration::get_default_max_logs();
 
 	}
 
@@ -70,7 +70,7 @@ class Logger {
 	 */
 	public static function get_logs() {
 
-		$logs = get_option( 'hmes_logger_logs', array() );
+		$logs = get_option( 'icspresso_logger_logs', array() );
 
 		//Log overflow, need to clear it
 		if ( ! is_array( $logs ) ) {
@@ -82,7 +82,7 @@ class Logger {
 				'data'      => '-',
 			) );
 
-			$logs = get_option( 'hmes_logger_logs', array() );
+			$logs = get_option( 'icspresso_logger_logs', array() );
 		}
 
 		return $logs;
@@ -95,8 +95,8 @@ class Logger {
 	 */
 	public static function set_logs( $logs ) {
 
-		delete_option( 'hmes_logger_logs' );
-		add_option( 'hmes_logger_logs', $logs, '', 'no' );
+		delete_option( 'icspresso_logger_logs' );
+		add_option( 'icspresso_logger_logs', $logs, '', 'no' );
 	}
 
 	/**

@@ -1,6 +1,6 @@
 <?php
 
-namespace HMES;
+namespace Icspresso;
 
 class Configuration {
 
@@ -21,9 +21,9 @@ class Configuration {
 	 */
 	public static function get_default_host() {
 
-		$current = defined( 'HMES_HOST' ) ? HMES_HOST : self::get_option( 'server_host', '' );
+		$current = defined( 'ICSPRESSO_HOST' ) ? ICSPRESSO_HOST : self::get_option( 'server_host', '' );
 
-		return apply_filters( 'hmes_default_host', $current );
+		return apply_filters( 'icspresso_host', $current );
 	}
 
 	/**
@@ -43,9 +43,9 @@ class Configuration {
 	 */
 	public static function get_default_port() {
 
-		$current = defined( 'HMES_PORT' ) ? HMES_PORT : self::get_option( 'server_port', '' );
+		$current = defined( 'ICSPRESSO_PORT' ) ? ICSPRESSO_PORT : self::get_option( 'server_port', '' );
 
-		return apply_filters( 'hmes_default_port', $current );
+		return apply_filters( 'icspresso_port', $current );
 	}
 
 
@@ -67,7 +67,7 @@ class Configuration {
 	 */
 	public static function get_default_protocol() {
 
-		return apply_filters( 'hmes_default_protocol', self::get_option( 'server_protocol', 'http' ) );
+		return apply_filters( 'icspresso_protocol', self::get_option( 'server_protocol', 'http' ) );
 	}
 
 	/**
@@ -77,9 +77,9 @@ class Configuration {
 	 */
 	public static function get_default_index_name() {
 
-		$current = defined( 'HMES_INDEX_NAME' ) ? HMES_INDEX_NAME : 'hmes';
+		$current = defined( 'ICSPRESSO_INDEX_NAME' ) ? ICSPRESSO_INDEX_NAME : 'icspresso';
 
-		return apply_filters( 'hmes_default_index_name', $current );
+		return apply_filters( 'icspresso_index_name', $current );
 	}
 
 	/**
@@ -89,7 +89,7 @@ class Configuration {
 	 */
 	public static function get_default_timeout() {
 
-		return apply_filters( 'hmes_default_index_timeout', 10 );
+		return apply_filters( 'icspresso_index_timeout', 10 );
 	}
 
 	/**
@@ -99,7 +99,7 @@ class Configuration {
 	 */
 	public static function get_default_max_logs() {
 
-		return apply_filters( 'hmes_defauilt_max_logs', 50 );
+		return apply_filters( 'icspresso_max_logs', 50 );
 	}
 
 	/**
@@ -118,7 +118,7 @@ class Configuration {
 			$protocols_with_name[$protocol] = strtoupper( $protocol );
 		}
 
-		return apply_filters( 'hmes_supported_protocols', $protocols_with_name );
+		return apply_filters( 'icspresso_supported_protocols', $protocols_with_name );
 	}
 
 	/**
@@ -140,9 +140,9 @@ class Configuration {
 	 */
 	public static function get_is_indexing_enabled() {
 
-		$current = defined( 'HMES_IS_INDEXING_ENABLED' ) ? HMES_IS_INDEXING_ENABLED : self::get_option( 'is_enabled', '0' );
+		$current = defined( 'ICSPRESSO_IS_INDEXING_ENABLED' ) ? ICSPRESSO_IS_INDEXING_ENABLED : self::get_option( 'is_enabled', '0' );
 
-		return (bool) apply_filters( 'hmes_is_indexing_enabled', $current );
+		return (bool) apply_filters( 'icspresso_is_indexing_enabled', $current );
 	}
 
 	/**
@@ -153,7 +153,7 @@ class Configuration {
 	 */
 	public static function set_option( $name, $value ) {
 
-		update_option( 'hmes_' . $name, $value );
+		update_option( 'icspresso_' . $name, $value );
 	}
 
 	/**
@@ -165,7 +165,7 @@ class Configuration {
 	 */
 	public static function get_option( $name, $default = false ) {
 
-		return get_option( 'hmes_' . $name, $default );
+		return get_option( 'icspresso_' . $name, $default );
 	}
 
 }

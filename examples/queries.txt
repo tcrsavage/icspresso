@@ -2,7 +2,7 @@ EXAMPLES:
 
 Get all posts of post type page
 
-$type = HMES_Type_Manager::get_type( 'post' );
+$type = Icspresso_Type_Manager::get_type( 'post' );
 
 $type->search( array(
 	"query" => array(
@@ -14,7 +14,7 @@ $type->search( array(
 
 Get all posts of type post which have author of ID 1
 
-$type = HMES_Type_Manager::get_type( 'post' );
+$type = Icspresso_Type_Manager::get_type( 'post' );
 
 $type->search( array(
 	"query" => array(
@@ -37,7 +37,7 @@ $type->search( array(
 
 Get all posts of type post which contain the phrase 'post phrase' in their content
 
-$type = HMES_Type_Manager::get_type( 'post' );
+$type = Icspresso_Type_Manager::get_type( 'post' );
 
 $type->search( array(
 	"query" => array(
@@ -61,7 +61,7 @@ $type->search( array(
 
 Get all posts of type post which are in are which are assigned term of ID 1 in the category taxonomy
 
-$type = HMES_Type_Manager::get_type( 'post' );
+$type = Icspresso_Type_Manager::get_type( 'post' );
 
 $type->search( array(
 	"query" => array(
@@ -84,7 +84,7 @@ $type->search( array(
 
 Get all posts of type post which have the phrase 'Post Title' in their title, and has the word 'Post' or 'Content' in it's content
 
-$type = HMES_Type_Manager::get_type( 'post' );
+$type = Icspresso_Type_Manager::get_type( 'post' );
 
 $type->search( array(
 	"query" => array(
@@ -112,7 +112,7 @@ $type->search( array(
 
 Get all posts of type post which have either the word 'Post' or 'Title' in their title or content, but weight title matches higher than content matches
 
-$type = HMES_Type_Manager::get_type( 'post' );
+$type = Icspresso_Type_Manager::get_type( 'post' );
 
 $type->search( array(
 	"query" => array(

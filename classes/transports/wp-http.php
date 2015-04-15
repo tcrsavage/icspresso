@@ -1,8 +1,8 @@
 <?php
 
-namespace HMES\Transports;
+namespace Icspresso\Transports;
 use ElasticSearch;
-use HMES\Logger;
+use Icspresso\Logger;
 
 class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 

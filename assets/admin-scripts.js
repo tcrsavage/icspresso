@@ -1,6 +1,6 @@
 jQuery( document ).ready( function() {
 
-	jQuery( '.hmes-log-table td.expand' ).click( function() {
+	jQuery( '.icspresso-log-table td.expand' ).click( function() {
 
 		var td = jQuery( this );
 
@@ -13,46 +13,46 @@ jQuery( document ).ready( function() {
 
 	} );
 
-	jQuery( '.hm-es-reindex-submit' ).click( function( e ) {
+	jQuery( '.icspresso-reindex-submit' ).click( function( e ) {
 
 		e.preventDefault();
 
 		var self = jQuery( this );
 
-		HMESIndexTypeManager.reindex( self.attr( 'data-type-name' ) );
+		IcspressoIndexTypeManager.reindex( self.attr( 'data-type-name' ) );
 	} );
 
-	jQuery( '.hm-es-resync-submit' ).click( function( e ) {
+	jQuery( '.icspresso-resync-submit' ).click( function( e ) {
 
 		e.preventDefault();
 
 		var self = jQuery( this );
 
-		HMESIndexTypeManager.resync( self.attr( 'data-type-name' ) );
+		IcspressoIndexTypeManager.resync( self.attr( 'data-type-name' ) );
 	} );
 
-	jQuery( '.hm-es-status' ).each( function() {
+	jQuery( '.icspresso-status' ).each( function() {
 
 		var name = jQuery( this ).attr( 'data-type-name' );
 
-		HMESIndexTypeManager.updateStatus( name );
+		IcspressoIndexTypeManager.updateStatus( name );
 
 	} );
 
 } );
 
-HMESIndexTypeManager = new function() {
+IcspressoIndexTypeManager = new function() {
 
 	var self = this;
 
 	self.getNonce = function() {
 
-		return jQuery( '#hm_es_settings' ).val();
+		return jQuery( '#icspresso_settings' ).val();
 	};
 
 	self.reindex = function( type, callback ) {
 
-		jQuery.post( ajaxurl, { action: 'hmes_init_index', type_name: type, nonce: self.getNonce() }, function( data ) {
+		jQuery.post( ajaxurl, { action: 'icspresso_init_index', type_name: type, nonce: self.getNonce() }, function( data ) {
 
 		} ).done( function() {
 
@@ -77,13 +77,13 @@ HMESIndexTypeManager = new function() {
 
 	self.resync = function( type ) {
 
-		jQuery.post( ajaxurl, { action: 'hmes_resync_index', type_name: type, nonce: self.getNonce() }, function( data ) {
+		jQuery.post( ajaxurl, { action: 'icspresso_resync_index', type_name: type, nonce: self.getNonce() }, function( data ) {
 
 		} ).done( function() {
 
 			var recurse = function( data ) {
 
-				if ( ! data.is_doing_full_index) {
+				if ( ! data.is_doing_full_index ) {
 					return;
 				}
 
@@ -101,8 +101,8 @@ HMESIndexTypeManager = new function() {
 
 	self.updateStatus = function( type, callback ) {
 
-		var element = jQuery( '.hm-es-status-' + type );
-		var messageElement = jQuery( '.hm-es-status-message-' + type );
+		var element = jQuery( '.icspresso-status-' + type );
+		var messageElement = jQuery( '.icspresso-status-message-' + type );
 
 		messageElement.html( 'Fetching...' );
 
@@ -151,7 +151,7 @@ HMESIndexTypeManager = new function() {
 
 	self.getStatus = function( type, callback ) {
 
-		jQuery.post( ajaxurl, { action: 'hmes_get_type_status', type_name: type, nonce: self.getNonce() }, function( data ) {
+		jQuery.post( ajaxurl, { action: 'icspresso_get_type_status', type_name: type, nonce: self.getNonce() }, function( data ) {
 
 			callback( data );
 

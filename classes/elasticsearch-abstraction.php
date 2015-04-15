@@ -1,6 +1,6 @@
 <?php
 
-namespace HMES;
+namespace Icspresso;
 
 class Client_Abstraction extends \ElasticSearch\Client {
 
@@ -14,8 +14,8 @@ class Client_Abstraction extends \ElasticSearch\Client {
 	public static function getTransports() {
 		return array(
 			//'http'  => 'ElasticSearch\\Transport\\HTTP',
-			'http' => '\\HMES\\Transports\\WP_HTTP',
-			'https' => '\\HMES\\Transports\\WP_HTTP',
+			'http'  => __NAMESPACE__ . '\\Transports\\WP_HTTP',
+			'https' => __NAMESPACE__ .'\\Transports\\WP_HTTP',
 		);
 	}
 

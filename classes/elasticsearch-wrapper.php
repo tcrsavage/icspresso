@@ -1,6 +1,6 @@
 <?php
 
-namespace HMES;
+namespace Icspresso;
 
 class Wrapper {
 
@@ -126,7 +126,7 @@ class Wrapper {
 	 */
 	public function create_index( $args = array() ) {
 
-		$args = apply_filters( 'hmes_index_creation_args', $args, $this->args['index'] );;
+		$args = apply_filters( 'icspresso_index_creation_args', $args, $this->args['index'] );;
 
 		$r = $this->get_connection()->request( array( '/', $this->args['index'] ), 'PUT', $args );
 
