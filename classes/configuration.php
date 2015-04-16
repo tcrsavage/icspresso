@@ -9,17 +9,17 @@ class Configuration {
 	 *
 	 * @param $host
 	 */
-	public static function set_default_host( $host ) {
+	public static function set_host( $host ) {
 
 		self::set_option( 'server_host', $host );
 	}
 
 	/**
-	 * Get the default elasticsearch host address to be used by the elasticsearch API wrapper
+	 * Get the  elasticsearch host address to be used by the elasticsearch API wrapper
 	 *
 	 * @return mixed|void
 	 */
-	public static function get_default_host() {
+	public static function get_host() {
 
 		$current = defined( 'ICSPRESSO_HOST' ) ? ICSPRESSO_HOST : self::get_option( 'server_host', '' );
 
@@ -27,21 +27,21 @@ class Configuration {
 	}
 
 	/**
-	 * Set the default elasticsearch port address to be used by the elasticsearch API wrapper
+	 * Set the  elasticsearch port address to be used by the elasticsearch API wrapper
 	 *
 	 * @param $port
 	 */
-	public static function set_default_port( $port ) {
+	public static function set_port( $port ) {
 
 		self::set_option( 'server_port', $port );
 	}
 
 	/**
-	 * Get the default elasticsearch port address to be used by the elasticsearch API wrapper
+	 * Get the  elasticsearch port address to be used by the elasticsearch API wrapper
 	 *
 	 * @return mixed|void
 	 */
-	public static function get_default_port() {
+	public static function get_port() {
 
 		$current = defined( 'ICSPRESSO_PORT' ) ? ICSPRESSO_PORT : self::get_option( 'server_port', '' );
 
@@ -50,22 +50,22 @@ class Configuration {
 
 
 	/**
-	 * Get the default elasticsearch host protocol to be used by the elasticsearch API wrapper
+	 * Get the  elasticsearch host protocol to be used by the elasticsearch API wrapper
 	 *
 	 * @param $protocol
 	 */
-	public static function set_default_protocol( $protocol ) {
+	public static function set_protocol( $protocol ) {
 
 		self::set_option( 'server_protocol', $protocol );
 	}
 
 
 	/**
-	 * Set the default elasticsearch protocol address to be used by the elasticsearch API wrapper
+	 * Set the  elasticsearch protocol address to be used by the elasticsearch API wrapper
 	 *
 	 * @return mixed|void
 	 */
-	public static function get_default_protocol() {
+	public static function get_protocol() {
 
 		return apply_filters( 'icspresso_protocol', self::get_option( 'server_protocol', 'http' ) );
 	}
@@ -75,7 +75,7 @@ class Configuration {
 	 *
 	 * @return string
 	 */
-	public static function get_default_index_name() {
+	public static function get_index_name() {
 
 		$current = defined( 'ICSPRESSO_INDEX_NAME' ) ? ICSPRESSO_INDEX_NAME : 'icspresso';
 
@@ -83,42 +83,23 @@ class Configuration {
 	}
 
 	/**
-	 * Get the default elasticsearch connection timeout
+	 * Get the elasticsearch connection timeout
 	 *
 	 * @return int
 	 */
-	public static function get_default_timeout() {
+	public static function get_timeout() {
 
 		return apply_filters( 'icspresso_index_timeout', 10 );
 	}
 
 	/**
-	 * Get the default maximum log count
+	 * Get the maximum log count
 	 *
 	 * @return int
 	 */
-	public static function get_default_max_logs() {
+	public static function get_max_logs() {
 
 		return apply_filters( 'icspresso_max_logs', 50 );
-	}
-
-	/**
-	 * Set the protocols supported by the elasticsearch API wrapper
-	 *
-	 * @return array
-	 */
-	public static function get_supported_protocols() {
-
-		$protocols = array_keys( Client_Abstraction::getTransports() );
-
-		$protocols_with_name = array();
-
-		foreach ( $protocols as $protocol ) {
-
-			$protocols_with_name[$protocol] = strtoupper( $protocol );
-		}
-
-		return apply_filters( 'icspresso_supported_protocols', $protocols_with_name );
 	}
 
 	/**
@@ -143,6 +124,34 @@ class Configuration {
 		$current = defined( 'ICSPRESSO_IS_INDEXING_ENABLED' ) ? ICSPRESSO_IS_INDEXING_ENABLED : self::get_option( 'is_enabled', '0' );
 
 		return (bool) apply_filters( 'icspresso_is_indexing_enabled', $current );
+	}
+
+
+	/**
+	 * Get the active types for indexing (post/comment/term etc);
+	 *
+	 * @return array    An associative array of slug=>class name
+	 */
+	public static function get_active_types() {
+
+		$current = self::get_option( 'active_types', false ) ? self::get_option( 'active_types', false ) : array(
+			'post'      => __NAMESPACE__ . '\\Types\Post',
+			'user'      => __NAMESPACE__ . '\\Types\User',
+			'comment'   => __NAMESPACE__ . '\\Types\Comment',
+			'term'      => __NAMESPACE__ . '\\Types\Term'
+		);
+
+		return apply_filters( 'icspresso_active_types', $current );
+	}
+
+	/**
+	 * Set whether or not elasticsearch indexing is enabled
+	 *
+	 * @param $bool
+	 */
+	public static function set_active_types( $active_types ) {
+
+		self::set_option( 'active_types', $active_types );
 	}
 
 	/**

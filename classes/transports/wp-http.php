@@ -6,6 +6,8 @@ use Icspresso\Logger;
 
 class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 
+	static $protocol   = "http";
+
 	var $is_logging_enabled = true;
 
 	function disable_logging() {
@@ -29,9 +31,8 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 	 */
 	protected function call( $url, $method = "GET", $payload = null ) {
 
-		$http       = new \WP_Http;
-		$protocol   = "http";
-		$request_url = $protocol . "://" . $this->host . ':' . $this->port . $url;
+		$http        = new \WP_Http;
+		$request_url = static::$protocol . "://" . $this->host . ':' . $this->port . $url;
 
 		//For compatibility with original transports handling
 		if ( is_array( $payload ) && count( $payload ) > 0)

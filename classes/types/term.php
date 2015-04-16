@@ -95,8 +95,6 @@ class Term extends Base {
 			return false;
 		}
 
-		$item = apply_filters( 'icspresso_parsed_item_for_index_' . $this->name, $item );
-
 		return $item;
 	}
 

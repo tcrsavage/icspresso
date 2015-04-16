@@ -11,8 +11,7 @@ class Logger {
 	 */
 	static function get_max_logs() {
 
-		return \Icspresso\Configuration::get_default_max_logs();
-
+		return get_default_configuration()->get_max_logs();
 	}
 
 	/**

@@ -83,8 +83,6 @@ class Comment extends Base {
 			$item['meta'][$meta_key] = reset( $meta_array );
 		}
 
-		$item = apply_filters( 'icspresso_parsed_item_for_index_' . $this->name, $item );
-
 		return $item;
 	}
 

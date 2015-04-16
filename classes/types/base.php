@@ -1,19 +1,24 @@
 <?php
 
 namespace Icspresso\Types;
-use Icspresso\Wrapper;
+use Icspresso\API;
 use Icspresso\Logger;
+use Icspresso\Configuration;
 
 abstract class Base {
 
 	public $name            = '';
-	public $client          = '';
-	public $wrapper         = '';
+	public $api             = '';
 	public $items_per_page  = 100;
 	public $index_hooks     = array();
 	public $delete_hooks    = array();
 	public $mappable_hooks  = array();
 	public $queued_actions  = array();
+
+	function __construct( Configuration $configuration ) {
+
+		$this->configuration = $configuration;
+	}
 
 	/**
 	 * Index callback, to be called when an item is added or edited in the database
@@ -92,39 +97,25 @@ abstract class Base {
 			return false;
 		}
 
-		return $this->get_client()->map( $this->get_mapping(), array(
+		return $this->get_api()->map( $this->get_mapping(), array(
 			'type' => $this->name
 		) );
 	}
 
 	/**
-	 * Get the ElasticSearch Client Wrapper with default index and type pre set
-	 *
-	 * @return \ElasticSearch\Client
-	 */
-	public function get_client() {
-
-		if ( ! $this->client ) {
-
-			$this->client = $this->get_wrapper()->get_client();
-		}
-
-		return $this->client;
-	}
-
-	/**
 	 * Get the Wrapper, initialised with default index and type pre set
 	 *
-	 * @return Wrapper|string
+	 * @return API
 	 */
-	public function get_wrapper() {
+	public function get_api() {
 
-		if ( ! $this->wrapper ) {
+		if ( ! $this->api ) {
 
-			$this->wrapper = Wrapper::get_instance( array( 'type' => $this->name ) );
+			$this->api = new API( $this->configuration );
+			$this->api->setType( $this->name );
 		}
 
-		return $this->wrapper;
+		return $this->api;
 	}
 
 	/**
@@ -135,12 +126,13 @@ abstract class Base {
 	public function index_item( $item ) {
 
 		$parsed = $this->parse_item_for_index( $item );
+		$parsed = apply_filters( 'icspresso_index_' . $this->name, $parsed, $item, $this );
 
 		if ( ! $parsed ) {
 			return;
 		}
 
-		$this->get_client()->index( $parsed, $parsed['ID'] );
+		$this->get_api()->index( $parsed, $parsed['ID'] );
 	}
 
 	/**
@@ -154,7 +146,7 @@ abstract class Base {
 			return;
 		}
 
-		$this->get_client()->delete( $item_id );
+		$this->get_api()->delete( $item_id );
 	}
 
 	/**
@@ -166,7 +158,7 @@ abstract class Base {
 	 */
 	public function search( $query, $options = array() ) {
 
-		return $this->get_client()->search( $query, $options );
+		return $this->get_api()->search( $query, $options );
 	}
 
 	/**
@@ -183,7 +175,7 @@ abstract class Base {
 
 		if ( $args['bulk'] ) {
 
-			$this->get_client()->begin();
+			$this->get_api()->begin();
 		}
 
 		foreach ( $items as $item ) {
@@ -193,7 +185,7 @@ abstract class Base {
 
 		if ( $args['bulk'] ) {
 
-			$this->get_client()->commit();
+			$this->get_api()->commit();
 		}
 
 	}
@@ -212,7 +204,7 @@ abstract class Base {
 
 		if ( $args['bulk'] ) {
 
-			$this->get_client()->begin();
+			$this->get_api()->begin();
 		}
 
 		foreach ( $items as $item ) {
@@ -222,7 +214,7 @@ abstract class Base {
 
 		if ( $args['bulk'] ) {
 
-			$this->get_client()->commit();
+			$this->get_api()->commit();
 		}
 	}
 
@@ -301,7 +293,7 @@ abstract class Base {
 				$hits_count = 0;
 			}
 
-			$cur_count =  $this->get_client()->request( '_count' );
+			$cur_count =  $this->get_api()->request( '_count' );
 			$cur_count = ! empty( $cur_count['count'] ) ? $cur_count['count'] : 0;
 
 			if ( $hits_count < count( $items ) ) {
@@ -394,8 +386,8 @@ abstract class Base {
 			\Icspresso\Logger::save_log( array(
 				'timestamp'      => time(),
 				'type'           => 'warning',
-				'index'          => $this->get_wrapper()->args['index'],
-				'document_type'  => $this->get_wrapper()->args['type'],
+				'index'          => $this->configuration->get_index_name(),
+				'document_type'  => $this->name,
 				'caller'         => 'save_queued_actions',
 				'args'           => '-',
 				'message'        => 'Saved actions buffer overflow. Too many actions have been saved for later syncing. (' . count( $all ) . ' items)'
@@ -458,7 +450,7 @@ abstract class Base {
 		}
 
 		///If we can't get a connection at the moment, save the queued actions for processing later
-		if ( ! $this->get_wrapper()->is_connection_available() || ! $this->get_wrapper()->is_index_created() ) {
+		if ( ! $this->get_api()->is_connection_available() || ! $this->get_api()->is_index_created() ) {
 
 			Logger::save_log( array(
 				'timestamp'      => time(),
@@ -473,7 +465,7 @@ abstract class Base {
 		} else {
 
 			//Begin a bulk transaction
-			$this->get_wrapper()->get_client()->begin();
+			$this->get_api()->begin();
 
 			foreach ( $actions as $identifier => $object ) {
 				foreach ( $object as $action => $args ) {
@@ -482,7 +474,7 @@ abstract class Base {
 			}
 
 			//Finish the bulk transaction
-			$this->get_wrapper()->get_client()->commit();
+			$this->get_api()->commit();
 		}
 
 		$this->clear_lock( 'execute_queued_actions' );
@@ -525,7 +517,7 @@ abstract class Base {
 
 		$response = array();
 
-		$count = $this->get_client()->request( '_count' );
+		$count = $this->get_api()->request( '_count' );
 
 		if ( empty( $count['error'] ) ) {
 			$response['indexed_count'] = $count['count'];
@@ -547,8 +539,6 @@ abstract class Base {
 	 */
 	public function delete_all_indexed_items() {
 
-		$wrapper = $this->get_wrapper();
-
-		$this->get_client()->request( array( '/', $wrapper->args['index'], $this->name ), 'DELETE' );
+		$this->get_api()->request( array( '/', $this->configuration->get_index_name(), $this->name ), 'DELETE' );
 	}
 }

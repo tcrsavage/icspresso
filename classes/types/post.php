@@ -128,9 +128,7 @@ class Post extends Base {
 					return $term->term_id;
 				}, array_values( $terms ) );
 			}
-		};
-
-		$item = apply_filters( 'icspresso_parsed_item_for_index_' . $this->name, $item );
+		}
 
 		return $item;
 	}

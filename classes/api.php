@@ -1,0 +1,140 @@
+<?php
+
+namespace Icspresso;
+
+use Icspresso\Transports\WP_HTTP;
+
+class API extends \ElasticSearch\Client {
+
+	/**
+	 * Hacked in due to private {transport} ref on \ElasticSearch\Client
+	 *
+	 * @var
+	 */
+	protected $transport_ref;
+
+	/**
+	 * @param Configuration $configuration
+	 */
+	public function __construct( Configuration $configuration ) {
+
+		$this->configuration = $configuration;
+
+		parent::__construct( $this->get_transport(), $this->configuration->get_index_name() );
+	}
+
+	/**
+	 * Disable logging for calls made by this API instance
+	 */
+	public function disable_logging() {
+
+		$this->get_connection()->disable_logging();
+	}
+
+	/**
+	 * Enable logging for calls made by this API instance
+	 */
+	public function enable_logging() {
+
+		$this->get_connection()->enable_logging();
+	}
+
+	/**
+	 * Get an elasticsearch Transport HTTP wrapper
+	 *
+	 * @return bool|Transports\WP_HTTP
+	 */
+	public function get_connection() {
+
+		return $this->get_transport();
+	}
+
+	/**
+	 * Get status of the elasticsearch index
+	 *
+	 * @return array
+	 */
+	public function get_status() {
+
+		$r = $this->get_connection()->request( array( '_status' ) );
+
+		return $r;
+	}
+
+	/**
+	 * Check if a connection to the elasticsearch server is available
+	 *
+	 * @return bool
+	 */
+	public function is_connection_available() {
+
+		if ( ! $this->configuration->get_host() || ! $this->configuration->get_port() ) {
+			return false;
+		}
+
+		$c = $this->get_connection();
+		$c->setIndex( '' );
+		$r = $c->request( array( '_status' ), 'GET', array() );
+		$c->setIndex( $this->configuration->get_index_name() );
+
+		return ( empty( $r['error'] ) ) ? true : false;
+	}
+
+	/**
+	 * Check if the default elasticsearch index is created
+	 *
+	 * @return bool
+	 */
+	public function is_index_created() {
+
+		if ( ! $this->configuration->get_host() || ! $this->configuration->get_port() || ! $this->configuration->get_index_name() ) {
+			return false;
+		}
+
+		$r = $this->get_status();
+
+		return ( empty( $r['error'] ) || strpos( $r['error'], 'IndexMissingException' ) === false ) ? true : false;
+	}
+
+	/**
+	 * Create the elasticsearch index
+	 *
+	 * @param array $args
+	 * @return array
+	 */
+	public function create_index( $args = array() ) {
+
+		$args = apply_filters( 'icspresso_index_creation_args', $args, $this->configuration->get_index_name() );
+
+		$r = $this->get_connection()->request( array( '/', $this->configuration->get_index_name() ), 'PUT', $args );
+
+		return $r;
+	}
+
+	/**
+	 * Delete the elasticsearch index
+	 *
+	 * @param array $args
+	 * @return array|bool
+	 */
+	public function delete_index( $args = array() ) {
+
+		$r = $this->get_connection()->request( array( '/',  $this->configuration->get_index_name() ), 'DELETE', $args );
+
+		return $r;
+	}
+
+	/**
+	 * Get the current transport object
+	 *
+	 * @return WP_HTTP
+	 */
+	public function get_transport() {
+
+		if ( ! $this->transport_ref ) {
+			$this->transport_ref = new WP_HTTP( $this->configuration->get_host(), $this->configuration->get_port(), $this->configuration->get_timeout() );
+		}
+
+		return $this->transport_ref;
+	}
+}

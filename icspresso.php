@@ -17,25 +17,36 @@ include_dir( __DIR__ . '/classes' );
 /**
  * Init ell Icspresso type classes on plugins_loaded hook
  */
-function init_types() {
+function init() {
 
-	Type_Manager::init_types();
+	$master = Master::get_instance();
+	$master->initialise();
 }
 
-add_action( 'plugins_loaded', __NAMESPACE__ . '\\init_types' );
+add_action( 'plugins_loaded', __NAMESPACE__ . '\\init' );
 
 /**
- * Get the list of Icspresso type classes by name
+ * Get the default configuration class used by default for all API interaction
  *
- * @return array
+ * @return Configuration
  */
-function get_type_class_names() {
-	return apply_filters( 'icspresso_index_types', array(
-		'post'      => __NAMESPACE__ . '\\Types\Post',
-		'user'      => __NAMESPACE__ . '\\Types\User',
-		'comment'   => __NAMESPACE__ . '\\Types\Comment',
-		'term'      => __NAMESPACE__ . '\\Types\Term'
-	) );
+function get_default_configuration() {
+
+	return apply_filters( 'icspresso_default_configuration', new Configuration() );
+}
+
+/**
+ * Load a template file from the templates directory
+ *
+ * Template markup is output, not returned
+ *
+ * @param $template
+ */
+function load_template( $template ) {
+
+	if ( file_exists( __DIR__  . '/templates/' . $template . '.php' ) ) {
+		include __DIR__  . '/templates/' . $template . '.php';
+	}
 }
 
 /**
@@ -45,9 +56,9 @@ function get_type_class_names() {
  * @param array $index_creation_args
  * @return array|bool
  */
-function init_elastic_search_index( $connection_args = array(), $index_creation_args = array() ) {
+function init_elastic_search_index( $index_creation_args = array() ) {
 
-	$es = Wrapper::get_instance( $connection_args );
+	$es = new API( get_default_configuration() );
 
 	$es->disable_logging();
 
@@ -72,7 +83,7 @@ function init_elastic_search_index( $connection_args = array(), $index_creation_
  */
 function delete_elastic_search_index( $connection_args = array(), $index_deletion_args = array() ) {
 
-	$es = Wrapper::get_instance( $connection_args );
+	$es = new API( $connection_args );
 
 	$es->disable_logging();
 
@@ -122,7 +133,7 @@ function reindex_types( $type_names ) {
 
 	foreach ( $type_names as $type_name ) {
 
-		$type = Type_Manager::get_type( $type_name );
+		$type = Master::get_instance()->get_type( $type_name );
 
 		if ( $type ) {
 			$type->index_all();
@@ -139,7 +150,7 @@ function resync_types( $type_names ) {
 
 	foreach ( $type_names as $type_name ) {
 
-		$type = Type_Manager::get_type( $type_name );
+		$type = Master::get_instance()->get_type( $type_name );
 
 		if ( $type ) {
 
