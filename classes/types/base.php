@@ -132,7 +132,14 @@ abstract class Base {
 			return;
 		}
 
-		$this->get_api()->index( $parsed, $parsed['ID'] );
+		if ( ! empty( $parsed['_id'] ) ) {
+			$id = $parsed['_id'];
+			unset( $parsed['_id'] );
+		} else {
+			$id = $parsed['ID'];
+		}
+
+		$this->get_api()->index( $parsed, $id );
 	}
 
 	/**
