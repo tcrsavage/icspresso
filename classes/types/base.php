@@ -235,8 +235,17 @@ abstract class Base {
 			global $wp_object_cache;
 
 			//clear object cache local cache to avoid memory overflow
-			if ( ! empty( $wp_object_cache->cache ) ) {
-				$wp_object_cache->cache = array();
+			if ( ! empty( $wp_object_cache ) ) {
+
+				if ( method_exists( $wp_object_cache, 'flush_local' ) ) {
+
+					$wp_object_cache->flush_local();
+
+				} else if( isset( $wp_object_cache->cache ) && isset( $wp_object_cache->cache ) ) {
+
+					$wp_object_cache->cache     = array();
+					$wp_object_cache->group_ops = array();
+				}
 			}
 
 			$items = $this->get_items( $page, $this->items_per_page );
