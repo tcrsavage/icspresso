@@ -104,7 +104,7 @@ class API extends \ElasticSearch\Client {
 	 */
 	public function create_index( $args = array() ) {
 
-		$args = apply_filters( 'icspresso_index_creation_args', $args, $this->configuration->get_index_name() );
+		$args = wp_parse_args( $args, $this->configuration->get_index_creation_args() );
 
 		$r = $this->get_connection()->request( array( '/', $this->configuration->get_index_name() ), 'PUT', $args );
 

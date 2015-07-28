@@ -126,6 +126,27 @@ class Configuration {
 		return (bool) apply_filters( 'icspresso_is_indexing_enabled', $current );
 	}
 
+	/**
+	 * Set the index creation args for initialising the index
+	 *
+	 * @param array $args
+	 */
+	public static function set_index_creation_args( array $args ) {
+
+		self::set_option( 'index_creation_args', $args );
+	}
+
+	/**
+	 * Get the index creation args for initialising the index
+	 *
+	 * @return array
+	 */
+	public static function get_index_creation_args() {
+
+		$args = self::get_option( 'index_creation_args', array() );
+
+		return apply_filters( 'icspresso_index_creation_args', $args );
+	}
 
 	/**
 	 * Get the active types for indexing (post/comment/term etc);
