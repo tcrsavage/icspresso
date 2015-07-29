@@ -60,6 +60,7 @@ class Master {
 			}
 
 			self::init_cron();
+			self::init_cli();
 		}
 
 		$this->is_initialised = true;
@@ -136,6 +137,22 @@ class Master {
 	/**
 	 *
 	 */
+	public function execute_index_cron() {
+
+		if ( ! get_default_configuration()->get_is_indexing_enabled() ) {
+			return;
+		}
+
+		foreach ( self::get_types() as $type ) {
+
+			$type->execute_queued_actions();
+		}
+
+	}
+
+	/**
+	 *
+	 */
 	protected function init_cron() {
 
 		if ( ! get_default_configuration()->get_is_indexing_enabled() ) {
@@ -151,19 +168,13 @@ class Master {
 		wp_schedule_event( time(), 'minutes_10', static::$index_cron_name );
 	}
 
-	/**
-	 *
-	 */
-	public function execute_index_cron() {
+	protected function init_cli() {
 
-		if ( ! get_default_configuration()->get_is_indexing_enabled() ) {
-			return;
+		if ( defined( 'WP_CLI' ) && 'WP_CLI' ) {
+
+			\WP_CLI::add_command( 'icspresso-configuration', __NAMESPACE__ . '\\CLI\\Configuration' );
+			\WP_CLI::add_command( 'icspresso-indexing',      __NAMESPACE__ . '\\CLI\\Indexing' );
 		}
-
-		foreach ( self::get_types() as $type ) {
-
-			$type->execute_queued_actions();
-		}
-
 	}
+
 }
