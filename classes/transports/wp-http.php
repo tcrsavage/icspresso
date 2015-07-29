@@ -8,7 +8,7 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 
 	static $protocol   = "http";
 
-	var $is_logging_enabled = true;
+	var $is_logging_enabled = null;
 
 	function disable_logging() {
 
@@ -18,6 +18,15 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 	function enable_logging() {
 
 		$this->is_logging_enabled = true;
+	}
+
+	function is_logging_enabled() {
+
+		if ( $this->is_logging_enabled !== null ) {
+			return $this->is_logging_enabled();
+		}
+
+		return \Icspresso\get_default_configuration()->get_is_logging_enabled();
 	}
 
 	/**
@@ -52,7 +61,7 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 
 			$data = array( 'error' => $r->get_error_message(), "code" => $r->get_error_code() );
 
-			if ( $this->is_logging_enabled ) {
+			if ( $this->is_logging_enabled() ) {
 				Logger::log_failed_request( $request_url, $method, $payload, $data );
 			}
 
