@@ -34,7 +34,7 @@ class Indexing extends \WP_CLI_Command {
 				$this->line( 'Could not find type: ' . $type_name );
 				continue;
 			} else {
-				$this->line( 'Indexing type: ' . $type_name . '(' . $type->get_items_count() . ' items)' );
+				$this->line( 'Indexing type: ' . $type_name . ' (' . $type->get_items_count() . ' items)' );
 			}
 
 			$type->index_all();
