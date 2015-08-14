@@ -95,7 +95,7 @@ class Term extends Base {
 			return false;
 		}
 
-		return $item;
+		return $this->filter_item( $item );
 	}
 
 	/**

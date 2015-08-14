@@ -5,6 +5,10 @@ use Icspresso\API;
 use Icspresso\Logger;
 use Icspresso\Configuration;
 
+/**
+ * Class Base
+ * @package Icspresso\Types
+ */
 abstract class Base {
 
 	public $name            = '';
@@ -234,8 +238,6 @@ abstract class Base {
 		$page = 1;
 
 		$this->set_is_doing_full_index( true );
-		$this->delete_all_indexed_items();
-		$this->set_mapping();
 
 		while ( $has_items ) {
 
@@ -267,6 +269,16 @@ abstract class Base {
 		}
 
 		$this->set_is_doing_full_index( false );
+	}
+
+	/**
+	 * Flush and reindex all items in the index
+	 */
+	function reindex_all() {
+
+		$this->delete_all_indexed_items();
+		$this->set_mapping();
+		$this->index_all();
 	}
 
 	/**
@@ -556,5 +568,16 @@ abstract class Base {
 	public function delete_all_indexed_items() {
 
 		$this->get_api()->request( array( '/', $this->configuration->get_index_name(), $this->name ), 'DELETE' );
+	}
+
+	/**
+	 * Internal function for filtering items before they are passed to elasticsearch for indexing
+	 *
+	 * @param $item
+	 * @return array
+	 */
+	protected function filter_item( $item ) {
+
+		return apply_filters( 'icpresso_filter_item_' . $this->name, $item );
 	}
 }
