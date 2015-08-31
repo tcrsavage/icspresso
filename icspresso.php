@@ -25,7 +25,6 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	include_dir( __DIR__ . '/classes/cli' );
 }
 
-
 /**
  * Init ell Icspresso type classes on plugins_loaded hook
  */

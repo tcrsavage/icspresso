@@ -4,7 +4,36 @@ namespace Icspresso\CLI;
 
 use Icspresso;
 
-class Indexing extends \WP_CLI_Command {
+class Server extends \WP_CLI_Command {
+
+	/**
+	 * Initialise the ES index
+	 *
+	 * @subcommand init-index
+	 *
+	 *  @synopsis [--force_init]
+	 */
+	public function init_index( $args, $args_assoc ) {
+
+		$args_assoc = wp_parse_args( $args_assoc, array(
+			'force_init' => false
+		) );
+
+		$api        = \Icspresso\Master::get_instance()->api;
+		$is_created = $api->is_index_created();
+
+		if ( $is_created && ! $args_assoc['force_init'] ) {
+			$this->error( 'The index has already been created use --force_init to reinitialise the index' );
+		}
+
+		if ( $is_created ) {
+			$api->delete_index();
+		}
+
+		$api->create_index();
+
+		$this->success( 'Index initialised.' );
+	}
 
 	/**
 	 * Reindex all items of specified types
@@ -40,6 +69,27 @@ class Indexing extends \WP_CLI_Command {
 			$type->index_all();
 
 			$this->success( 'Indexing for type: ' . $type_name . ' complete.' );
+		}
+	}
+
+	protected function verify_connection() {
+
+		$api = \Icspresso\Master::get_instance()->api;
+
+		if ( ! $api->is_connection_available() ) {
+			$this->error( 'Server connection is not available, please check configuration and server status.' );
+		}
+
+	}
+
+	protected function verify_index() {
+
+		$api = \Icspresso\Master::get_instance()->api;
+
+		$this->verify_connection();
+
+		if ( ! $api->is_index_created() ) {
+			$this->error( 'Index has not yet been created, please create the index.' );
 		}
 	}
 

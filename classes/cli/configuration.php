@@ -10,7 +10,7 @@ class Configuration extends \WP_CLI_Command {
 	 * Get or set the configuration's server 'host' value
 	 *
 	 * @subcommand host
-	 * @synopsis <method>
+	 * @synopsis <method> [<value>]
 	 *
 	 */
 	public function host( $args, $args_assoc ) {
@@ -21,8 +21,8 @@ class Configuration extends \WP_CLI_Command {
 	/**
 	 * Get or set the configuration's server 'port' value
 	 *
-	 * @subcommand host
-	 * @synopsis <method>
+	 * @subcommand port
+	 * @synopsis <method> [<value>]
 	 *
 	 */
 	public function port( $args, $args_assoc ) {
@@ -33,8 +33,8 @@ class Configuration extends \WP_CLI_Command {
 	/**
 	 * Get or set the configuration's server 'protocol' value
 	 *
-	 * @subcommand host
-	 * @synopsis <method>
+	 * @subcommand protocol
+	 * @synopsis <method> [<value>]
 	 *
 	 */
 	public function protocol( $args, $args_assoc ) {
@@ -46,7 +46,7 @@ class Configuration extends \WP_CLI_Command {
 	 * Get or set the configuration's server 'index_name' value
 	 *
 	 * @subcommand index-name
-	 * @synopsis <method>
+	 * @synopsis <method> [<value>]
 	 *
 	 */
 	public function index_name( $args, $args_assoc ) {
@@ -58,7 +58,7 @@ class Configuration extends \WP_CLI_Command {
 	 * Get or set the configuration's server connection 'timeout' value
 	 *
 	 * @subcommand timeout
-	 * @synopsis <method>
+	 * @synopsis <method> [<value>]
 	 *
 	 */
 	public function timeout( $args, $args_assoc ) {
@@ -69,8 +69,8 @@ class Configuration extends \WP_CLI_Command {
 	/**
 	 * Get or set the configuration's 'max_logs' value
 	 *
-	 * @subcommand host
-	 * @synopsis <method>
+	 * @subcommand max-logs
+	 * @synopsis <method> [<value>]
 	 *
 	 */
 	public function max_logs( $args, $args_assoc ) {
@@ -81,8 +81,8 @@ class Configuration extends \WP_CLI_Command {
 	/**
 	 * Get or set the configuration's 'is_logging_enabled' value
 	 *
-	 * @subcommand host
-	 * @synopsis <method>
+	 * @subcommand is-logging-enabled
+	 * @synopsis <method> [<value>]
 	 *
 	 */
 	public function is_logging_enabled( $args, $args_assoc ) {
@@ -93,8 +93,8 @@ class Configuration extends \WP_CLI_Command {
 	/**
 	 * Get or set the configuration's 'is_indexing_enabled' value
 	 *
-	 * @subcommand host
-	 * @synopsis <method>
+	 * @subcommand is-indexing-enabled
+	 * @synopsis <method> [<value>]
 	 *
 	 */
 	public function is_indexing_enabled( $args, $args_assoc ) {

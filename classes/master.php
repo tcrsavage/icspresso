@@ -32,6 +32,7 @@ class Master {
 	public function __construct( Configuration $configuration ) {
 
 		$this->configuration = $configuration;
+		$this->api = new API( $configuration );
 	}
 
 	/**
@@ -173,7 +174,7 @@ class Master {
 		if ( defined( 'WP_CLI' ) && 'WP_CLI' ) {
 
 			\WP_CLI::add_command( 'icspresso-configuration', __NAMESPACE__ . '\\CLI\\Configuration' );
-			\WP_CLI::add_command( 'icspresso-indexing',      __NAMESPACE__ . '\\CLI\\Indexing' );
+			\WP_CLI::add_command( 'icspresso-server',      __NAMESPACE__ . '\\CLI\\Server' );
 		}
 	}
 
