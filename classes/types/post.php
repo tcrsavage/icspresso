@@ -130,7 +130,7 @@ class Post extends Base {
 			}
 		}
 
-		return $item;
+		return $this->filter_item( $item );
 	}
 
 	/**

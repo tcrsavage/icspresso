@@ -141,14 +141,16 @@ function include_dir( $dir, $depth = 0, $max_scan_depth = 5 ) {
  *
  * @param $type_names
  */
-function reindex_types( $type_names ) {
+function reindex_types( $type_names, $flush = true ) {
 
 	foreach ( $type_names as $type_name ) {
 
 		$type = Master::get_instance()->get_type( $type_name );
 
-		if ( $type ) {
+		if ( $type && $flush ) {
 			$type->index_all();
+		} else if( $type ) {
+			$type->reindex_all();
 		}
 	}
 }

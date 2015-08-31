@@ -83,7 +83,7 @@ class Comment extends Base {
 			$item['meta'][$meta_key] = reset( $meta_array );
 		}
 
-		return $item;
+		return $this->filter_item( $item );
 	}
 
 	/**
