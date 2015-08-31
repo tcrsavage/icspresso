@@ -95,6 +95,11 @@ class Term extends Base {
 			return false;
 		}
 
+		// Elasticsearch doesn't like this differing between objects and bools
+		if ( empty( $item['taxonomy_data']->rewrite ) ) {
+			$item['taxonomy_data']->rewrite = new \StdClass();
+		}
+
 		return $this->filter_item( $item );
 	}
 
@@ -138,7 +143,7 @@ class Term extends Base {
 
 		$taxonomies = get_taxonomies();
 
-		$tt_ids = $wpdb->get_col( $wpdb->prepare( "SELECT term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy IN ('" . join("', '", $taxonomies ) . "') ORDER BY term_taxonomy_id ASC LIMIT %d,%d", ( $page > 0 ) ? $per_page * ( $page -1 ) : 0, $per_page ) );
+		$tt_ids = $wpdb->get_col( $wpdb->prepare( "SELECT term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy IN ('" . join( "', '", $taxonomies ) . "') ORDER BY term_taxonomy_id ASC LIMIT %d,%d", ( $page > 0 ) ? $per_page * ( $page -1 ) : 0, $per_page ) );
 
 		return $tt_ids;
 	}
@@ -168,7 +173,7 @@ class Term extends Base {
 
 		global $wpdb;
 
-		$r = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->term_taxonomy WHERE taxonomy IN ('" . join("', '", $taxonomies ) . "')" );
+		$r = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->term_taxonomy WHERE taxonomy IN ('" . join( "', '", $taxonomies ) . "')" );
 
 		return (int) $r;
 	}
