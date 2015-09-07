@@ -135,7 +135,7 @@ function reindex_types( $type_names, $flush = true ) {
 
 		$type = Master::get_instance()->get_type( $type_name );
 
-		if ( $type && $flush ) {
+		if ( $type && ! $flush ) {
 			$type->index_all();
 		} else if( $type ) {
 			$type->reindex_all();
