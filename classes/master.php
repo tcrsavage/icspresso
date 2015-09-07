@@ -32,6 +32,8 @@ class Master {
 	public function __construct( Configuration $configuration ) {
 
 		$this->configuration = $configuration;
+
+		$this->api = new API( $this->configuration );
 	}
 
 	/**
