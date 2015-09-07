@@ -232,7 +232,7 @@ abstract class Base {
 	/**
 	 * Index all the items for the specified type
 	 */
-	function index_all() {
+	public function index_all() {
 
 		$has_items = true;
 		$page = 1;
@@ -287,7 +287,7 @@ abstract class Base {
 	 * This method is called every 10minues via WP_Cron by default for each model type
 	 *
 	 */
-	function index_pending() {
+	public function index_pending() {
 
 		$this->set_is_doing_full_index( true );
 

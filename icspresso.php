@@ -10,9 +10,20 @@ Author URI: http://hmn.md/
 
 namespace Icspresso;
 
-require_once ( __DIR__ . '/icspresso-admin.php' );
+
 include_dir( __DIR__ . '/lib/elasticsearch/src' );
-include_dir( __DIR__ . '/classes' );
+include_dir( __DIR__ . '/classes/transports' );
+include_dir( __DIR__ . '/classes/types' );
+
+require_once( __DIR__ . '/icspresso-admin.php' );
+require_once( __DIR__ . '/classes/api.php' );
+require_once( __DIR__ . '/classes/configuration.php' );
+require_once( __DIR__ . '/classes/logger.php' );
+require_once( __DIR__ . '/classes/master.php' );
+
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	include_dir( __DIR__ . '/classes/cli' );
+}
 
 /**
  * Init ell Icspresso type classes on plugins_loaded hook
