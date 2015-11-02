@@ -307,9 +307,9 @@ abstract class Base {
 			$items = $this->get_items_ids( $page, $this->items_per_page );
 
 			$r = $this->search( array(
-				'fields' => [],
-				'query' => array(
-					'ids' => array( 'values' => $items )
+				'fields' => array(),
+				'query'  => array(
+					'ids'  => array( 'values' => $items )
 				),
 				'size'   => $this->items_per_page,
 				'from'   =>  $this->items_per_page * ( $page - 1 ),
