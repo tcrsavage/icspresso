@@ -241,21 +241,7 @@ abstract class Base {
 
 		while ( $has_items ) {
 
-			global $wp_object_cache;
-
-			//clear object cache local cache to avoid memory overflow
-			if ( ! empty( $wp_object_cache ) ) {
-
-				if ( method_exists( $wp_object_cache, 'flush_local' ) ) {
-
-					$wp_object_cache->flush_local();
-
-				} else if( isset( $wp_object_cache->cache ) && isset( $wp_object_cache->cache ) ) {
-
-					$wp_object_cache->cache     = array();
-					$wp_object_cache->group_ops = array();
-				}
-			}
+			$this->stop_the_insanity();
 
 			$items = $this->get_items( $page, $this->items_per_page );
 
@@ -579,5 +565,27 @@ abstract class Base {
 	protected function filter_item( $item ) {
 
 		return apply_filters( 'icpresso_filter_item_' . $this->name, $item );
+	}
+
+	/**
+	 * Flush the local object cache if it exists
+	 *
+	 * Vastly reduces memory limit issues when running a full index on large databases
+	 */
+	protected function stop_the_insanity() {
+
+		global $wpdb, $wp_object_cache;
+
+		$wpdb->queries = array(); // or define( 'WP_IMPORTING', true );
+
+		if ( !is_object( $wp_object_cache ) )
+			return;
+
+		$wp_object_cache->group_ops = array();
+		$wp_object_cache->memcache_debug = array();
+		$wp_object_cache->cache = array();
+
+		if ( is_callable( $wp_object_cache, '__remoteset' ) )
+			$wp_object_cache->__remoteset(); // important
 	}
 }
