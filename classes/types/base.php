@@ -468,7 +468,7 @@ abstract class Base {
 
 			Logger::save_log( array(
 				'timestamp'      => time(),
-				'message'        => 'Failed to execute syncing actions for ' . $actions . ' items.',
+				'message'        => 'Failed to execute syncing actions for ' . count( $actions ) . ' items.',
 				'data'           => array( 'document_type' => $this->name, 'queued_actions' => $actions )
 			) );
 
