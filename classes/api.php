@@ -3,6 +3,7 @@
 namespace Icspresso;
 
 use Icspresso\Transports\WP_HTTP;
+use Icspresso\Transports\WP_HTTPS;
 
 class API extends \ElasticSearch\Client {
 
@@ -12,6 +13,11 @@ class API extends \ElasticSearch\Client {
 	 * @var
 	 */
 	protected $transport_ref;
+
+	/**
+	 * @var Configuration
+	 */
+	private $configuration;
 
 	/**
 	 * @param Configuration $configuration
@@ -132,7 +138,22 @@ class API extends \ElasticSearch\Client {
 	public function get_transport() {
 
 		if ( ! $this->transport_ref ) {
-			$this->transport_ref = new WP_HTTP( $this->configuration->get_host(), $this->configuration->get_port(), $this->configuration->get_timeout() );
+
+			$protocol = $this->configuration->get_protocol();
+			$host = $this->configuration->get_host();
+			$port = $this->configuration->get_port();
+			$timeout = $this->configuration->get_timeout();
+
+			if(strtolower($protocol) == 'https') {
+
+				$this->transport_ref = new WP_HTTPS( $host, $port, $timeout );
+
+			}elseif(strtolower($protocol) == 'http') {
+
+				$this->transport_ref = new WP_HTTP( $host, $port, $timeout );
+
+			}
+
 		}
 
 		return $this->transport_ref;
