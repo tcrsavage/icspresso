@@ -148,7 +148,7 @@ class API extends \ElasticSearch\Client {
 
 				$this->transport_ref = new WP_HTTPS( $host, $port, $timeout );
 
-			}elseif(strtolower($protocol) == 'http') {
+			} else {
 
 				$this->transport_ref = new WP_HTTP( $host, $port, $timeout );
 
