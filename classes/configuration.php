@@ -67,7 +67,9 @@ class Configuration {
 	 */
 	public static function get_protocol() {
 
-		return apply_filters( 'icspresso_protocol', self::get_option( 'server_protocol', 'http' ) );
+		$current = defined( 'ICSPRESSO_PROTOCOL' ) ? ICSPRESSO_PROTOCOL : self::get_option( 'server_protocol', 'http' );
+
+		return apply_filters( 'icspresso_protocol', $current );
 	}
 
 	/**
