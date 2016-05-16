@@ -319,6 +319,8 @@ abstract class Base {
 			}
 
 			$page++;
+			
+			$this->stop_the_insanity();
 		}
 
 		$this->set_is_doing_full_index( false );
