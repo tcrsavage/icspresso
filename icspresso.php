@@ -20,6 +20,7 @@ require_once( __DIR__ . '/classes/api.php' );
 require_once( __DIR__ . '/classes/configuration.php' );
 require_once( __DIR__ . '/classes/logger.php' );
 require_once( __DIR__ . '/classes/master.php' );
+require_once( __DIR__ . '/classes/http.php' );
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	include_dir( __DIR__ . '/classes/cli' );

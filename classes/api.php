@@ -80,7 +80,7 @@ class API extends \ElasticSearch\Client {
 
 		$c = $this->get_connection();
 		$c->setIndex( '' );
-		$r = $c->request( array( '_status' ), 'GET', array() );
+		$r = $c->request( '_status', 'GET', array() );
 		$c->setIndex( $this->configuration->get_index_name() );
 
 		return ( empty( $r['error'] ) ) ? true : false;
@@ -112,7 +112,7 @@ class API extends \ElasticSearch\Client {
 
 		$args = wp_parse_args( $args, $this->configuration->get_index_creation_args() );
 
-		$r = $this->get_connection()->request( array( '/', $this->configuration->get_index_name() ), 'PUT', $args );
+		$r = $this->get_connection()->request( $this->configuration->get_index_name(), 'PUT', $args );
 
 		return $r;
 	}
@@ -125,7 +125,7 @@ class API extends \ElasticSearch\Client {
 	 */
 	public function delete_index( $args = array() ) {
 
-		$r = $this->get_connection()->request( array( '/',  $this->configuration->get_index_name() ), 'DELETE', $args );
+		$r = $this->get_connection()->request( $this->configuration->get_index_name(), 'DELETE', $args );
 
 		return $r;
 	}

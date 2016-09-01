@@ -38,16 +38,18 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 	 * @param array|bool $payload The document/instructions to pass along
 	 * @throws \HTTPException
 	 */
-	protected function call( $url, $method = "GET", $payload = null ) {
+	protected function call( $url, $method = 'GET', $payload = null ) {
+		global $wp_version;
 
-		$http        = new \WP_Http;
+		$http        = version_compare( $wp_version, '4.6', '<' ) ? new \WP_Http : new \Icspresso\WP_Http;
 		$request_url = static::$protocol . "://" . $this->host . ':' . $this->port . $url;
 
 		//For compatibility with original transports handling
-		if ( is_array( $payload ) && count( $payload ) > 0)
+		if ( is_array( $payload ) && count( $payload ) > 0 ) {
 			$body = json_encode( $payload );
-		else
+		} else {
 			$body = $payload;
+		}
 
 		$r = $http->request( $request_url, array(
 			'timeout'       => $this->getTimeout(),
@@ -76,5 +78,29 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Build a callable url
+	 *
+	 * @return string
+	 * @param array|bool $path
+	 * @param array      $options Query parameter options to pass
+	 */
+	protected function buildUrl( $path = false, array $options = array() ) {
+		$isAbsolute = ( is_array( $path ) ? $path[0][0] : $path[0] ) === '/';
+		$url        = $isAbsolute ? '' : "/" . $this->index;
+
+		if ( $path && is_array( $path ) && count( $path ) > 0 ) {
+			$url .= "/" . implode( "/", array_filter( $path ) );
+		}
+		if ( substr( $url, -1 ) == "/" ) {
+			$url = substr( $url, 0, -1 );
+		}
+		if ( count( $options ) > 0 ) {
+			$url .= "?" . http_build_query( $options, '', '&' );
+		}
+
+		return $url;
 	}
 }
