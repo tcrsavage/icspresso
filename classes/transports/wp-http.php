@@ -40,9 +40,8 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 	 * @throws \HTTPException
 	 */
 	protected function call( $url, $method = 'GET', $payload = null ) {
-		global $wp_version;
 
-		$http        = version_compare( $wp_version, '4.6', '<' ) ? new \WP_Http : new \Icspresso\WP_Http;
+		$http        = new \WP_Http;
 		$request_url = static::$protocol . "://" . $this->host . ':' . $this->port . $url;
 
 		//For compatibility with original transports handling
@@ -51,6 +50,9 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 		} else {
 			$body = $payload;
 		}
+
+		//Normalise GET requests to POST for HTTP spec compliance
+		$method = 'GET' === strtoupper( $method ) ? 'POST' : $method;
 
 		$r = $http->request( $request_url, array(
 			'timeout'   => $this->getTimeout(),
