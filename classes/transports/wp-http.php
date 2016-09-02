@@ -1,12 +1,13 @@
 <?php
 
 namespace Icspresso\Transports;
+
 use ElasticSearch;
 use Icspresso\Logger;
 
 class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 
-	static $protocol   = "http";
+	static $protocol = "http";
 
 	var $is_logging_enabled = null;
 
@@ -33,8 +34,8 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 	 * Perform a http call against an url with an optional payload
 	 *
 	 * @return array
-	 * @param string $url
-	 * @param string $method (GET/POST/PUT/DELETE)
+	 * @param string     $url
+	 * @param string     $method  (GET/POST/PUT/DELETE)
 	 * @param array|bool $payload The document/instructions to pass along
 	 * @throws \HTTPException
 	 */
@@ -52,11 +53,11 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 		}
 
 		$r = $http->request( $request_url, array(
-			'timeout'       => $this->getTimeout(),
-			'method'        => strtoupper( $method ),
-			'body'          => $body,
-			'sslverify'     => false,
-			'headers'       => array( 'Host' => $this->host . ':' . $this->port )
+			'timeout'   => $this->getTimeout(),
+			'method'    => strtoupper( $method ),
+			'body'      => $body,
+			'sslverify' => false,
+			'headers'   => array( 'Host' => $this->host . ':' . $this->port ),
 		) );
 
 		if ( is_wp_error( $r ) ) {
@@ -80,27 +81,4 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 		return $data;
 	}
 
-	/**
-	 * Build a callable url
-	 *
-	 * @return string
-	 * @param array|bool $path
-	 * @param array      $options Query parameter options to pass
-	 */
-	protected function buildUrl( $path = false, array $options = array() ) {
-		$isAbsolute = ( is_array( $path ) ? $path[0][0] : $path[0] ) === '/';
-		$url        = $isAbsolute ? '' : "/" . $this->index;
-
-		if ( $path && is_array( $path ) && count( $path ) > 0 ) {
-			$url .= "/" . implode( "/", array_filter( $path ) );
-		}
-		if ( substr( $url, -1 ) == "/" ) {
-			$url = substr( $url, 0, -1 );
-		}
-		if ( count( $options ) > 0 ) {
-			$url .= "?" . http_build_query( $options, '', '&' );
-		}
-
-		return $url;
-	}
 }
