@@ -1,12 +1,13 @@
 <?php
 
 namespace Icspresso\Transports;
+
 use ElasticSearch;
 use Icspresso\Logger;
 
 class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 
-	static $protocol   = "http";
+	static $protocol = "http";
 
 	var $is_logging_enabled = null;
 
@@ -33,28 +34,32 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 	 * Perform a http call against an url with an optional payload
 	 *
 	 * @return array
-	 * @param string $url
-	 * @param string $method (GET/POST/PUT/DELETE)
+	 * @param string     $url
+	 * @param string     $method  (GET/POST/PUT/DELETE)
 	 * @param array|bool $payload The document/instructions to pass along
 	 * @throws \HTTPException
 	 */
-	protected function call( $url, $method = "GET", $payload = null ) {
+	protected function call( $url, $method = 'GET', $payload = null ) {
 
 		$http        = new \WP_Http;
 		$request_url = static::$protocol . "://" . $this->host . ':' . $this->port . $url;
 
 		//For compatibility with original transports handling
-		if ( is_array( $payload ) && count( $payload ) > 0)
+		if ( is_array( $payload ) && count( $payload ) > 0 ) {
 			$body = json_encode( $payload );
-		else
+		} else {
 			$body = $payload;
+		}
+
+		//Normalise GET requests to POST for HTTP spec compliance
+		$method = 'GET' === strtoupper( $method ) ? 'POST' : $method;
 
 		$r = $http->request( $request_url, array(
-			'timeout'       => $this->getTimeout(),
-			'method'        => strtoupper( $method ),
-			'body'          => $body,
-			'sslverify'     => false,
-			'headers'       => array( 'Host' => $this->host . ':' . $this->port )
+			'timeout'   => $this->getTimeout(),
+			'method'    => strtoupper( $method ),
+			'body'      => $body,
+			'sslverify' => false,
+			'headers'   => array( 'Host' => $this->host . ':' . $this->port ),
 		) );
 
 		if ( is_wp_error( $r ) ) {
@@ -77,4 +82,5 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 
 		return $data;
 	}
+
 }
