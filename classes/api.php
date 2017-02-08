@@ -4,8 +4,9 @@ namespace Icspresso;
 
 use Icspresso\Transports\WP_HTTP;
 use Icspresso\Transports\WP_HTTPS;
+use ElasticSearch\Client;
 
-class API extends \ElasticSearch\Client {
+class API extends Client {
 
 	/**
 	 * Hacked in due to private {transport} ref on \ElasticSearch\Client
@@ -144,7 +145,7 @@ class API extends \ElasticSearch\Client {
 			$port = $this->configuration->get_port();
 			$timeout = $this->configuration->get_timeout();
 
-			if(strtolower($protocol) == 'https') {
+			if ( strtolower( $protocol ) === 'https' ) {
 
 				$this->transport_ref = new WP_HTTPS( $host, $port, $timeout );
 
@@ -153,7 +154,6 @@ class API extends \ElasticSearch\Client {
 				$this->transport_ref = new WP_HTTP( $host, $port, $timeout );
 
 			}
-
 		}
 
 		return $this->transport_ref;
@@ -166,5 +166,20 @@ class API extends \ElasticSearch\Client {
 	 */
 	public function createBulk() {
 		return new Transports\Bulk( $this );
+	}
+
+	/**
+	 * Puts a mapping on index, overwriting so we can add root level config
+	 *
+	 * @param array|object $mapping
+	 * @param array        $config
+	 * @return array
+	 */
+	public function map( $mapping, array $config = array() ) {
+		if ( is_array( $mapping ) ) {
+			$mapping = new Mapping( $mapping );
+		}
+
+		return parent::map( $mapping, $config );
 	}
 }

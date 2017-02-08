@@ -46,6 +46,7 @@ abstract class Base {
 	 * Parse an item for indexing (should support being supplied either an ID, or an item object/array
 	 *
 	 * @param $item
+	 * @param array $args
 	 * @return mixed
 	 */
 	public abstract function parse_item_for_index( $item, $args = array() );
@@ -102,7 +103,7 @@ abstract class Base {
 		}
 
 		return $this->get_api()->map( $this->get_mapping(), array(
-			'type' => $this->name
+			'type' => $this->name,
 		) );
 	}
 
@@ -149,7 +150,7 @@ abstract class Base {
 	/**
 	 * Delete an item from the index with specified document ID
 	 *
-	 * @param $item
+	 * @param $item_id
 	 */
 	public function delete_item( $item_id ) {
 
@@ -181,7 +182,7 @@ abstract class Base {
 	public function index_items( $items, $args = array() ) {
 
 		$args = wp_parse_args( $args, array(
-			'bulk'    => false
+			'bulk' => false,
 		) );
 
 		if ( $args['bulk'] ) {
@@ -210,7 +211,7 @@ abstract class Base {
 	public function delete_items( $items, $args = array() ) {
 
 		$args = wp_parse_args( $args, array(
-			'bulk'    => false
+			'bulk' => false,
 		) );
 
 		if ( $args['bulk'] ) {
@@ -283,22 +284,18 @@ abstract class Base {
 
 		while ( $has_items ) {
 
-			global $wp_object_cache;
-
-			//clear object cache local cache to avoid memory overflow
-			if ( ! empty( $wp_object_cache->cache ) ) {
-				$wp_object_cache->cache = array();
-			}
+			$this->stop_the_insanity();
 
 			$items = $this->get_items_ids( $page, $this->items_per_page );
+			$items = apply_filters( 'icspresso_filter_items_ids_' . $this->name, $items );
 
 			$r = $this->search( array(
 				'fields' => array(),
 				'query'  => array(
-					'ids'  => array( 'values' => $items )
+					'ids'  => array( 'values' => $items ),
 				),
 				'size'   => $this->items_per_page,
-				'from'   =>  $this->items_per_page * ( $page - 1 ),
+				'from'   => $this->items_per_page * ( $page - 1 ),
 			) );
 
 			if ( ! empty( $r['hits']['total'] ) ) {
@@ -307,7 +304,7 @@ abstract class Base {
 				$hits_count = 0;
 			}
 
-			$cur_count =  $this->get_api()->request( '_count' );
+			$cur_count = $this->get_api()->request( '_count' );
 			$cur_count = ! empty( $cur_count['count'] ) ? $cur_count['count'] : 0;
 
 			if ( $hits_count < count( $items ) ) {
@@ -319,9 +316,7 @@ abstract class Base {
 			}
 
 			$page++;
-			
-			$this->stop_the_insanity();
-		}
+		}// End while().
 
 		$this->set_is_doing_full_index( false );
 	}
@@ -336,11 +331,11 @@ abstract class Base {
 	function add_action( $action, $identifier, $args = array() ) {
 
 		//keep actions in order of when they were last set
-		if ( isset( $this->queued_actions[$identifier][$action] ) ) {
-			unset( $this->queued_actions[$identifier][$action]  );
+		if ( isset( $this->queued_actions[ $identifier ][ $action ] ) ) {
+			unset( $this->queued_actions[ $identifier ][ $action ] );
 		}
 
-		$this->queued_actions[(string)$identifier][$action] = $args;
+		$this->queued_actions[ (string) $identifier ][ $action ] = $args;
 	}
 
 	/**
@@ -354,8 +349,9 @@ abstract class Base {
 	}
 
 	/**
-	 * Aquire a save lock to update the global actions queue with those set in the current thread
+	 * Acquire a save lock to update the global actions queue with those set in the current thread
 	 *
+	 * @param string $action
 	 * @return bool
 	 */
 	function acquire_lock( $action ) {
@@ -373,6 +369,8 @@ abstract class Base {
 
 	/**
 	 * Clear the save lock after global actions have been updated
+	 *
+	 * @param string $action
 	 */
 	function clear_lock( $action ) {
 
@@ -399,14 +397,14 @@ abstract class Base {
 
 		if ( count( $all ) > 10000 ) {
 
-			\Icspresso\Logger::save_log( array(
+			Logger::save_log( array(
 				'timestamp'      => time(),
 				'type'           => 'warning',
 				'index'          => $this->configuration->get_index_name(),
 				'document_type'  => $this->name,
 				'caller'         => 'save_queued_actions',
 				'args'           => '-',
-				'message'        => 'Saved actions buffer overflow. Too many actions have been saved for later syncing. (' . count( $all ) . ' items)'
+				'message'        => 'Saved actions buffer overflow. Too many actions have been saved for later syncing. (' . count( $all ) . ' items)',
 			) );
 
 			$all = array_slice( $all, -10000, 10000, true );
@@ -471,7 +469,7 @@ abstract class Base {
 			Logger::save_log( array(
 				'timestamp'      => time(),
 				'message'        => 'Failed to execute syncing actions for ' . count( $actions ) . ' items.',
-				'data'           => array( 'document_type' => $this->name, 'queued_actions' => $actions )
+				'data'           => array( 'document_type' => $this->name, 'queued_actions' => $actions ),
 			) );
 
 			$this->queued_actions = $actions;
@@ -580,14 +578,16 @@ abstract class Base {
 
 		$wpdb->queries = array(); // or define( 'WP_IMPORTING', true );
 
-		if ( !is_object( $wp_object_cache ) )
+		if ( ! is_object( $wp_object_cache ) ) {
 			return;
+		}
 
 		$wp_object_cache->group_ops = array();
 		$wp_object_cache->memcache_debug = array();
 		$wp_object_cache->cache = array();
 
-		if ( is_callable( $wp_object_cache, '__remoteset' ) )
+		if ( is_callable( $wp_object_cache, '__remoteset' ) ) {
 			$wp_object_cache->__remoteset(); // important
+		}
 	}
 }
