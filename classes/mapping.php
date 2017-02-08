@@ -11,7 +11,26 @@ class Mapping extends \ElasticSearch\Mapping {
 	 */
 	public function export() {
 
-		$root_object = apply_filters( 'icspresso_root_mapping_' . $this->config['type'], array() );
+		$root_object = apply_filters( 'icspresso_root_mapping_' . $this->config['type'], array(
+			'numeric_detection'    => true,
+			'dynamic_date_formats' => array(
+				'yyyy-MM-dd HH:mm:ss',
+				'yyyy-MM-dd',
+			),
+			'dynamic_templates'    => array(
+				array(
+					'meta_template_1' => array(
+						'path_match'         => 'meta.*',
+						'match_mapping_type' => 'string',
+						'mapping'            => array(
+							'index' => 'not_analyzed',
+							'type'  => 'string',
+						),
+					),
+				),
+			),
+		) );
+
 		$root_object['properties'] = $this->properties;
 
 		return $root_object;
