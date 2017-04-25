@@ -2,7 +2,9 @@
 
 namespace Icspresso;
 
-class Mapping extends \ElasticSearch\Mapping {
+use ElasticSearch\Mapping as Mapping_Base;
+
+class Mapping extends Mapping_Base {
 
 	/**
 	 * Export mapping data as a json-ready array
