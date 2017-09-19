@@ -42,7 +42,7 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 	protected function call( $url, $method = 'GET', $payload = null ) {
 
 		$http        = new \WP_Http;
-		$request_url = static::$protocol . "://" . $this->host . ':' . $this->port . $url;
+		$request_url = static::$protocol . "://" . $this->host . ':' . $this->port . '/' . ltrim( $url, '/' );
 
 		//For compatibility with original transports handling
 		if ( is_array( $payload ) && count( $payload ) > 0 ) {
@@ -51,20 +51,24 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 			$body = $payload;
 		}
 
-		//Normalise GET requests to POST for HTTP spec compliance
-		$method = 'GET' === strtoupper( $method ) ? 'POST' : $method;
-
-		$r = $http->request( $request_url, array(
+		$request_args = array(
 			'timeout'   => $this->getTimeout(),
 			'method'    => strtoupper( $method ),
-			'body'      => $body,
 			'sslverify' => false,
 			'headers'   => array( 'Host' => $this->host . ':' . $this->port ),
-		) );
+		);
+
+		//Normalise GET requests to POST for HTTP spec compliance
+		if ( $body ) {
+			$method = 'GET' === strtoupper( $method ) ? 'POST' : $method;
+			$request_args['body'] = $body;
+		}
+
+		$r = $http->request( $request_url, $request_args );
 
 		if ( is_wp_error( $r ) ) {
 
-			$data = array( 'error' => $r->get_error_message(), "code" => $r->get_error_code() );
+			$data = array( 'error' => $r->get_error_message(), 'code' => $r->get_error_code() );
 
 			if ( $this->is_logging_enabled() ) {
 				Logger::log_failed_request( $request_url, $method, $payload, $data );
@@ -78,6 +82,8 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 		if ( (int) $r['response']['code'] > 299 && $this->is_logging_enabled ) {
 
 			Logger::log_failed_request( $request_url, $method, $payload, $data );
+
+			$data = array( 'error' => $data['error']['reason'], 'code' => $data['status'] );
 		}
 
 		return $data;

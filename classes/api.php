@@ -62,7 +62,7 @@ class API extends \ElasticSearch\Client {
 	 */
 	public function get_status() {
 
-		$r = $this->get_connection()->request( array( '_status' ) );
+		$r = $this->get_connection()->request( array( '_cluster/health' ) );
 
 		return $r;
 	}
@@ -80,7 +80,7 @@ class API extends \ElasticSearch\Client {
 
 		$c = $this->get_connection();
 		$c->setIndex( '' );
-		$r = $c->request( '/_status', 'GET', array() );
+		$r = $c->request( '/_cluster/health', 'GET', array() );
 		$c->setIndex( $this->configuration->get_index_name() );
 
 		return ( empty( $r['error'] ) ) ? true : false;
