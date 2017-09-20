@@ -90,7 +90,7 @@ class Configuration {
 	 */
 	public static function get_index_name() {
 
-		$current = defined( 'ICSPRESSO_INDEX_NAME' ) ? ICSPRESSO_INDEX_NAME : self::get_option( 'server_port', 'icspresso' );
+		$current = defined( 'ICSPRESSO_INDEX_NAME' ) ? ICSPRESSO_INDEX_NAME : self::get_option( 'index_name', 'icspresso' );
 
 		return apply_filters( 'icspresso_index_name', $current );
 	}

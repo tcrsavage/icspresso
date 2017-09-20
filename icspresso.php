@@ -17,6 +17,7 @@ include_dir( __DIR__ . '/classes/types' );
 
 require_once( __DIR__ . '/icspresso-admin.php' );
 require_once( __DIR__ . '/classes/api.php' );
+require_once( __DIR__ . '/classes/mapping.php' );
 require_once( __DIR__ . '/classes/configuration.php' );
 require_once( __DIR__ . '/classes/logger.php' );
 require_once( __DIR__ . '/classes/master.php' );
