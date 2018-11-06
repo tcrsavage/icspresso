@@ -24,7 +24,7 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 	function is_logging_enabled() {
 
 		if ( $this->is_logging_enabled !== null ) {
-			return $this->is_logging_enabled();
+			return $this->is_logging_enabled;
 		}
 
 		return \Icspresso\get_default_configuration()->get_is_logging_enabled();
