@@ -75,7 +75,7 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 
 		$data = json_decode( $r['body'], true );
 
-		if ( (int) $r['response']['code'] > 299 && $this->is_logging_enabled ) {
+		if ( (int) $r['response']['code'] > 299 && $this->is_logging_enabled() ) {
 
 			Logger::log_failed_request( $request_url, $method, $payload, $data );
 		}
