@@ -77,7 +77,11 @@ class WP_HTTP extends \ElasticSearch\Transport\HTTP {
 
 		if ( (int) $r['response']['code'] > 299 && $this->is_logging_enabled() ) {
 
-			Logger::log_failed_request( $request_url, $method, $payload, $data );
+			$error_data = [
+				'error' => 'Error from Elasticsearch',
+				'data' => $data,
+			];
+			Logger::log_failed_request( $request_url, $method, $payload, $error_data );
 		}
 
 		return $data;
